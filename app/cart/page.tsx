@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import CheckoutModal from "@/components/checkout-modal"
 
 interface CartItem {
   id: number
@@ -17,6 +18,7 @@ interface CartItem {
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false)
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]")
@@ -191,7 +193,11 @@ export default function CartPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Button className="w-full soft-button text-base py-3 cursor-pointer" size="lg">
+                  <Button
+                    onClick={() => setShowCheckoutModal(true)}
+                    className="w-full soft-button text-base py-3 cursor-pointer"
+                    size="lg"
+                  >
                     Proceed to Checkout
                   </Button>
 
@@ -217,6 +223,8 @@ export default function CartPage() {
           </div>
         )}
       </div>
+
+      <CheckoutModal open={showCheckoutModal} onOpenChange={setShowCheckoutModal} />
     </div>
   )
 }

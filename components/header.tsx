@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Phone, ShoppingCart, Heart, Menu } from "lucide-react"
+import { Phone, ShoppingCart, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
@@ -43,11 +43,6 @@ export default function Header() {
       <header className="bg-white border-b">
         <div className="container mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between py-2 sm:py-4 gap-2 sm:gap-4">
-            {/* Mobile Menu Button */}
-            <Button variant="ghost" size="sm" className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full cursor-pointer">
-              <Menu className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-            </Button>
-
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0 cursor-pointer">
               <div className="text-lg sm:text-2xl font-bold text-primary">
