@@ -51,17 +51,16 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Search Bar */}
-            <div className="flex-1 max-w-xs sm:max-w-md md:max-w-2xl mx-2 sm:mx-4 md:mx-8">
-              <div className="relative">
+            <div className="flex-1 min-w-0 mx-2 sm:mx-4 md:mx-8">
+              <div className="relative max-w-xs sm:max-w-md md:max-w-2xl mx-auto">
                 <Input
                   type="text"
                   placeholder="Search product..."
-                  className="w-full pl-2 sm:pl-4 pr-16 sm:pr-24 py-1.5 sm:py-2 text-sm rounded-lg border-2 border-gray-200 focus:border-primary cursor-text"
+                  className="w-full pl-3 sm:pl-4 pr-12 sm:pr-20 py-2 sm:py-2.5 text-sm rounded-lg border-2 border-gray-200 focus:border-primary cursor-text"
                 />
                 <Button
                   size="sm"
-                  className="absolute right-0.5 sm:right-1 top-0.5 sm:top-1 bottom-0.5 sm:bottom-1 px-2 sm:px-6 bg-primary hover:bg-primary/90 soft-button text-xs sm:text-sm cursor-pointer"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 px-2 sm:px-4 h-7 sm:h-8 bg-primary hover:bg-primary/90 soft-button text-xs sm:text-sm cursor-pointer"
                 >
                   <span className="hidden sm:inline">Search</span>
                   <span className="sm:hidden">Go</span>
@@ -70,9 +69,9 @@ export default function Header() {
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex items-center gap-1 sm:gap-3 md:gap-6">
+            <div className="flex items-center gap-1 sm:gap-3 md:gap-6 flex-shrink-0">
               {/* Hotline Support */}
-              <div className="hidden md:flex items-center gap-2 text-sm">
+              <div className="hidden lg:flex items-center gap-2 text-sm">
                 <div className="bg-primary/10 p-2 rounded-full">
                   <Phone className="h-4 w-4 text-primary" />
                 </div>
@@ -86,7 +85,7 @@ export default function Header() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowAdminModal(true)}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 hover:bg-gray-100 rounded-lg cursor-pointer text-xs sm:text-sm font-medium"
+                className="hidden sm:flex px-2 sm:px-3 py-1.5 sm:py-2 hover:bg-gray-100 rounded-lg cursor-pointer text-xs sm:text-sm font-medium"
               >
                 Admin
               </Button>
@@ -144,19 +143,10 @@ export default function Header() {
 
               <div className="flex items-center gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm whitespace-nowrap">
                 <a href="#" className="hover:text-accent transition-colors cursor-pointer">
-                  Gift Hampers
-                </a>
-                <a href="#" className="hover:text-accent transition-colors cursor-pointer">
                   Our Story
                 </a>
                 <a href="#" className="hover:text-accent transition-colors cursor-pointer">
-                  News
-                </a>
-                <a href="#" className="hover:text-accent transition-colors cursor-pointer">
                   Contact us
-                </a>
-                <a href="#" className="hover:text-accent transition-colors cursor-pointer">
-                  Mooncake
                 </a>
               </div>
             </div>

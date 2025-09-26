@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Truck, MapPin } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 interface CheckoutModalProps {
   open: boolean
@@ -24,16 +25,73 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
     address: "",
     location: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [deliveryType, setDeliveryType] = useState("delivery")
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle checkout submission
-    console.log("Checkout data:", formData)
-    onOpenChange(false)
+    setIsSubmitting(true)
+
+    try {
+      // Get cart items from localStorage
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+
+      // Calculate total amount
+      const totalAmount = cart.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
+
+      // Save order to database
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("orders")
+        .insert({
+          full_name: formData.fullName,
+          phone_number: formData.phoneNumber,
+          email: formData.email,
+          country: formData.country,
+          address: formData.address,
+          location: formData.location,
+          delivery_type: deliveryType,
+          cart_items: cart,
+          total_amount: totalAmount,
+          order_status: "pending",
+        })
+        .select()
+
+      if (error) {
+        console.error("Error saving order:", error)
+        alert("Failed to complete order. Please try again.")
+        return
+      }
+
+      console.log("Order saved successfully:", data)
+
+      // Clear cart after successful order
+      localStorage.removeItem("cart")
+      window.dispatchEvent(new Event("cartUpdated"))
+
+      // Show success message
+      alert("Order completed successfully! We'll contact you soon.")
+
+      // Close modal and reset form
+      onOpenChange(false)
+      setFormData({
+        fullName: "",
+        phoneNumber: "",
+        email: "",
+        country: "Vietnam",
+        address: "",
+        location: "",
+      })
+    } catch (error) {
+      console.error("Error completing order:", error)
+      alert("Failed to complete order. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -58,7 +116,7 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
           <div>
             <h2 className="text-lg font-semibold mb-4">Delivery information</h2>
 
-            <Tabs defaultValue="delivery" className="w-full">
+            <Tabs value={deliveryType} onValueChange={setDeliveryType} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="delivery" className="flex items-center gap-2 cursor-pointer">
                   <Truck className="h-4 w-4" />
@@ -137,11 +195,12 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                       variant="outline"
                       onClick={() => onOpenChange(false)}
                       className="flex-1 cursor-pointer"
+                      disabled={isSubmitting}
                     >
                       Cancel
                     </Button>
-                    <Button type="submit" className="flex-1 cursor-pointer">
-                      Complete Order
+                    <Button type="submit" className="flex-1 cursor-pointer" disabled={isSubmitting}>
+                      {isSubmitting ? "Processing..." : "Complete Order"}
                     </Button>
                   </div>
                 </form>
