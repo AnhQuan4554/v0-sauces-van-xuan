@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { formatPrice, Product } from "@/lib/products";
 import { getProducts } from "@/app/utils/supabase/products";
+import { useRouter } from "next/navigation";
+import { formatPrice, Product } from "@/app/types/products";
 
 export default function ProductGrid() {
   const { toast } = useToast();
+  const router = useRouter();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,7 +77,6 @@ export default function ProductGrid() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -104,6 +106,7 @@ export default function ProductGrid() {
             <Card
               key={product.id}
               className="group hover:shadow-lg transition-all duration-300 hover:scale-105 flex flex-col h-full cursor-pointer"
+              onClick={() => router.push(`/product/${product.id}`)}
             >
               <CardContent className="p-2 sm:p-4 flex flex-col h-full">
                 <div className="relative mb-3 sm:mb-4">
@@ -162,7 +165,10 @@ export default function ProductGrid() {
 
                   <Button
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground soft-button text-xs sm:text-sm py-1.5 sm:py-2 mt-auto cursor-pointer"
-                    onClick={() => addToCart(product)}
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                    }}
                   >
                     <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">ADD TO CART</span>

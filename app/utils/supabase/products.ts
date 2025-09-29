@@ -1,5 +1,6 @@
 import { Product } from "@/lib/products";
 import { createClient } from "./client";
+import { ProductCreate } from "@/app/types/products";
 
 export interface CreateProductData {
   name: string;
@@ -51,9 +52,9 @@ export async function getProduct(id: string): Promise<Product | null> {
 // Create new product
 export async function createProduct(
   productData: CreateProductData
-): Promise<Product> {
+): Promise<ProductCreate> {
   const supabase = createClient();
-  const { data, error } = await supabase
+  const { data, error, status } = await supabase
     .from("products")
     .insert(productData)
     .select()
@@ -63,7 +64,7 @@ export async function createProduct(
     console.error("Error creating product:", error);
     throw error;
   }
-
+  console.log("status+++", status);
   return data;
 }
 

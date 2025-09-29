@@ -1,14 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Plus, Edit, Trash2, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
+import { Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -16,19 +23,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  sold: number
-  image: string
-  tags: string[]
-  description?: string
-}
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Product, ProductCreate, ProductUpdate } from "../types/products";
+import { createProduct } from "../utils/supabase/products";
 
 const initialProducts: Product[] = [
   {
@@ -36,7 +35,7 @@ const initialProducts: Product[] = [
     name: "Hot Salsa Doritos 300G",
     price: 179900,
     sold: 48,
-    image: "/hot-salsa-sauce-jar.jpg",
+    image_url: "/hot-salsa-sauce-jar.jpg",
     tags: ["HOT", "HOT", "HOT", "HOT"],
     description: "Spicy hot salsa sauce perfect for adding heat to your meals",
   },
@@ -103,83 +102,106 @@ const initialProducts: Product[] = [
     tags: [],
     description: "Organic sriracha sauce with natural ingredients",
   },
-]
+];
 
 export default function AdminPage() {
-  const [products, setProducts] = useState<Product[]>(initialProducts)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [formData, setFormData] = useState({
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<ProductUpdate | null>(
+    null
+  );
+  const [formData, setFormData] = useState<ProductCreate>({
     name: "",
-    price: "",
-    image: "",
-    tags: "",
+    price: 0,
+    image_url: "",
+    tags: [""],
     description: "",
-  })
+    sold: 0,
+  });
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN").format(price) + "đ"
-  }
+    return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+  };
 
-  const handleAddProduct = (e: React.FormEvent) => {
-    e.preventDefault()
-    const newProduct: Product = {
-      id: Math.max(...products.map((p) => p.id)) + 1,
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newProduct: ProductCreate = {
+      // id: Math.max(...products.map((p) => p.id)) + 1,
       name: formData.name,
-      price: Number.parseInt(formData.price),
+      price: Number(formData.price),
       sold: 0,
-      image: formData.image || "/placeholder.svg",
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+      image_url: formData.image_url || "/placeholder.svg",
+      tags: formData.tags,
       description: formData.description,
+    };
+    // setProducts([...products, newProduct]);
+    setFormData({
+      name: "",
+      price: 0,
+      image_url: "",
+      tags: [""],
+      description: "",
+      sold: 0,
+    });
+    // Handle add product to DB
+    try {
+      const res = await createProduct(newProduct);
+      if (res) {
+        setIsAddDialogOpen(false);
+        alert(`Create ${res?.name} success`);
+      }
+    } catch (error) {
+      console.log("err when create new product");
     }
-    setProducts([...products, newProduct])
-    setFormData({ name: "", price: "", image: "", tags: "", description: "" })
-    setIsAddDialogOpen(false)
-  }
+  };
 
   const handleEditProduct = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!editingProduct) return
+    e.preventDefault();
+    if (!editingProduct) return;
 
-    const updatedProduct: Product = {
+    const updatedProduct: ProductUpdate = {
       ...editingProduct,
       name: formData.name,
-      price: Number.parseInt(formData.price),
-      image: formData.image || "/placeholder.svg",
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+      price: Number(formData.price),
+      image_url: formData.image_url || "/placeholder.svg",
+      tags: formData.tags,
       description: formData.description,
-    }
+    };
 
-    setProducts(products.map((p) => (p.id === editingProduct.id ? updatedProduct : p)))
-    setFormData({ name: "", price: "", image: "", tags: "", description: "" })
-    setEditingProduct(null)
-    setIsEditDialogOpen(false)
-  }
+    // setProducts(
+    //   products.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
+    // );
+    setFormData({
+      name: "",
+      price: 0,
+      image_url: "",
+      tags: [""],
+      description: "",
+      sold: 0,
+    });
+    setEditingProduct(null);
+    setIsEditDialogOpen(false);
+  };
 
   const handleDeleteProduct = (id: number) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter((p) => p.id !== id))
+      setProducts(products.filter((p) => p.id !== id));
     }
-  }
+  };
 
-  const openEditDialog = (product: Product) => {
-    setEditingProduct(product)
+  const openEditDialog = (product: ProductUpdate) => {
+    setEditingProduct(product);
     setFormData({
-      name: product.name,
-      price: product.price.toString(),
-      image: product.image,
-      tags: product.tags.join(", "),
+      name: product.name || "",
+      price: product.price || 0,
+      image_url: product.image_url || "",
+      tags: product.tags || [""],
       description: product.description || "",
-    })
-    setIsEditDialogOpen(true)
-  }
+      sold: product.sold || 0,
+    });
+    setIsEditDialogOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 sm:p-8">
@@ -188,12 +210,18 @@ export default function AdminPage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="outline" size="sm" className="soft-button bg-transparent cursor-pointer">
+              <Button
+                variant="outline"
+                size="sm"
+                className="soft-button bg-transparent cursor-pointer"
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Shop
               </Button>
             </Link>
-            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Product Management</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">
+              Product Management
+            </h1>
           </div>
 
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -206,7 +234,9 @@ export default function AdminPage() {
             <DialogContent className="sm:max-w-md mx-2 sm:mx-auto max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
-                <DialogDescription>Enter the details for the new product.</DialogDescription>
+                <DialogDescription>
+                  Enter the details for the new product.
+                </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleAddProduct} className="space-y-4">
                 <div className="space-y-2">
@@ -214,7 +244,9 @@ export default function AdminPage() {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     placeholder="Enter product name"
                     required
                     className="cursor-text"
@@ -226,7 +258,12 @@ export default function AdminPage() {
                     id="price"
                     type="number"
                     value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        price: Number(e.target.value),
+                      })
+                    }
                     placeholder="Enter price"
                     required
                     className="cursor-text"
@@ -236,8 +273,10 @@ export default function AdminPage() {
                   <Label htmlFor="image">Image URL</Label>
                   <Input
                     id="image"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    value={formData.image_url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, image_url: e.target.value })
+                    }
                     placeholder="Enter image URL or leave empty for placeholder"
                     className="cursor-text"
                   />
@@ -247,7 +286,14 @@ export default function AdminPage() {
                   <Input
                     id="tags"
                     value={formData.tags}
-                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                    onChange={(e) => {
+                      const valueTags = e.target.value;
+                      const arrTags = valueTags
+                        ?.split(",")
+                        ?.map((tag) => tag.trim())
+                        .filter((tag) => tag);
+                      setFormData({ ...formData, tags: arrTags });
+                    }}
                     placeholder="HOT, SPICY, NEW"
                     className="cursor-text"
                   />
@@ -257,7 +303,9 @@ export default function AdminPage() {
                   <Textarea
                     id="description"
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     placeholder="Enter product description"
                     className="cursor-text"
                   />
@@ -299,18 +347,26 @@ export default function AdminPage() {
                   <TableRow key={product.id}>
                     <TableCell>
                       <img
-                        src={product.image || "/placeholder.svg"}
+                        src={product.image_url || "/placeholder.svg"}
                         alt={product.name}
                         className="w-12 h-12 object-cover rounded"
                       />
                     </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell className="font-semibold text-primary">{formatPrice(product.price)}</TableCell>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
+                    <TableCell className="font-semibold text-primary">
+                      {formatPrice(product.price)}
+                    </TableCell>
                     <TableCell>{product.sold}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {product.tags.slice(0, 2).map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
@@ -361,7 +417,9 @@ export default function AdminPage() {
                 <Input
                   id="edit-name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   placeholder="Enter product name"
                   required
                   className="cursor-text"
@@ -373,7 +431,9 @@ export default function AdminPage() {
                   id="edit-price"
                   type="number"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: Number(e.target.value) })
+                  }
                   placeholder="Enter price"
                   required
                   className="cursor-text"
@@ -383,8 +443,10 @@ export default function AdminPage() {
                 <Label htmlFor="edit-image">Image URL</Label>
                 <Input
                   id="edit-image"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  value={formData.image_url}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image_url: e.target.value })
+                  }
                   placeholder="Enter image URL"
                   className="cursor-text"
                 />
@@ -394,7 +456,14 @@ export default function AdminPage() {
                 <Input
                   id="edit-tags"
                   value={formData.tags}
-                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  onChange={(e) => {
+                    const valueTags = e.target.value;
+                    const arrTags = valueTags
+                      ?.split(",")
+                      ?.map((tag) => tag.trim())
+                      .filter((tag) => tag);
+                    setFormData({ ...formData, tags: arrTags });
+                  }}
                   placeholder="HOT, SPICY, NEW"
                   className="cursor-text"
                 />
@@ -404,7 +473,9 @@ export default function AdminPage() {
                 <Textarea
                   id="edit-description"
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   placeholder="Enter product description"
                   className="cursor-text"
                 />
@@ -427,5 +498,5 @@ export default function AdminPage() {
         </Dialog>
       </div>
     </div>
-  )
+  );
 }

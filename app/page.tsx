@@ -9,7 +9,6 @@ import MobileFilterToggle from "@/components/mobile-filter-toggle";
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <AdminModal />
       <FloatingSocial />
 
@@ -25,8 +24,6 @@ export default function Home() {
           </section>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
