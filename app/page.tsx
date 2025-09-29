@@ -1,10 +1,10 @@
-import Header from "@/components/header"
-import ProductGrid from "@/components/product-grid"
-import Sidebar from "@/components/sidebar"
-import Footer from "@/components/footer"
-import AdminModal from "@/components/admin-modal"
-import FloatingSocial from "@/components/floating-social"
-import MobileFilterToggle from "@/components/mobile-filter-toggle"
+import Header from "@/components/header";
+import ProductGrid from "@/components/product-grid";
+import Sidebar from "@/components/sidebar";
+import Footer from "@/components/footer";
+import AdminModal from "@/components/admin-modal";
+import FloatingSocial from "@/components/floating-social";
+import MobileFilterToggle from "@/components/mobile-filter-toggle";
 
 export default function Home() {
   return (
@@ -28,5 +28,5 @@ export default function Home() {
 
       <Footer />
     </div>
-  )
+  );
 }
