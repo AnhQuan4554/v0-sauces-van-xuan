@@ -16,9 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import { getProduct, getProducts } from "@/app/utils/supabase/products";
+import { getProduct, getProducts } from "@/lib/supabase/products";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice, Product } from "@/app/types/products";
 

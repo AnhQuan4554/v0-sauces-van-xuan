@@ -1,22 +1,37 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Truck, MapPin } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Truck, MapPin } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { CreateOrder } from "@/app/types/orders";
 
 interface CheckoutModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps) {
+export default function CheckoutModal({
+  open,
+  onOpenChange,
+}: CheckoutModalProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -24,27 +39,32 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
     country: "Vietnam",
     address: "",
     location: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [deliveryType, setDeliveryType] = useState("delivery")
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deliveryType, setDeliveryType] = useState("delivery");
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  const handleSubmit = async (e: React.FormEvent, buyNowItem?: CreateOrder) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       // Get cart items from localStorage
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+      const newOrder = buyNowItem
+        ? buyNowItem
+        : JSON.parse(localStorage.getItem("cart") || "[]");
 
       // Calculate total amount
-      const totalAmount = cart.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
+      const totalAmount = newOrder.reduce(
+        (sum: number, item: any) => sum + item.price * item.quantity,
+        0
+      );
 
       // Save order to database
-      const supabase = createClient()
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("orders")
         .insert({
@@ -55,29 +75,29 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
           address: formData.address,
           location: formData.location,
           delivery_type: deliveryType,
-          cart_items: cart,
+          cart_items: newOrder,
           total_amount: totalAmount,
           order_status: "pending",
         })
-        .select()
+        .select();
 
       if (error) {
-        console.error("Error saving order:", error)
-        alert("Failed to complete order. Please try again.")
-        return
+        console.error("Error saving order:", error);
+        alert("Failed to complete order. Please try again.");
+        return;
       }
 
-      console.log("Order saved successfully:", data)
+      console.log("Order saved successfully:", data);
 
       // Clear cart after successful order
-      localStorage.removeItem("cart")
-      window.dispatchEvent(new Event("cartUpdated"))
+      localStorage.removeItem("cart");
+      window.dispatchEvent(new Event("cartUpdated"));
 
       // Show success message
-      alert("Order completed successfully! We'll contact you soon.")
+      alert("Order completed successfully! We'll contact you soon.");
 
       // Close modal and reset form
-      onOpenChange(false)
+      onOpenChange(false);
       setFormData({
         fullName: "",
         phoneNumber: "",
@@ -85,14 +105,14 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
         country: "Vietnam",
         address: "",
         location: "",
-      })
+      });
     } catch (error) {
-      console.error("Error completing order:", error)
-      alert("Failed to complete order. Please try again.")
+      console.error("Error completing order:", error);
+      alert("Failed to complete order. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,27 +122,27 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Sign in section */}
-          <div className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              Sign in to unlock seamless shopping and exclusive deals just for you
-            </p>
-            <Button variant="outline" className="cursor-pointer bg-transparent">
-              Sign in
-            </Button>
-          </div>
-
           {/* Delivery information */}
           <div>
             <h2 className="text-lg font-semibold mb-4">Delivery information</h2>
 
-            <Tabs value={deliveryType} onValueChange={setDeliveryType} className="w-full">
+            <Tabs
+              value={deliveryType}
+              onValueChange={setDeliveryType}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="delivery" className="flex items-center gap-2 cursor-pointer">
+                <TabsTrigger
+                  value="delivery"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <Truck className="h-4 w-4" />
                   Delivery
                 </TabsTrigger>
-                <TabsTrigger value="pickup" className="flex items-center gap-2 cursor-pointer">
+                <TabsTrigger
+                  value="pickup"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <MapPin className="h-4 w-4" />
                   Pick up
                 </TabsTrigger>
@@ -133,7 +153,9 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                   <Input
                     placeholder="Enter full name"
                     value={formData.fullName}
-                    onChange={(e) => handleInputChange("fullName", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("fullName", e.target.value)
+                    }
                     className="cursor-text"
                     required
                   />
@@ -142,7 +164,9 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                     <Input
                       placeholder="Enter phone number"
                       value={formData.phoneNumber}
-                      onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("phoneNumber", e.target.value)
+                      }
                       className="cursor-text pl-12"
                       required
                     />
@@ -159,24 +183,28 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     className="cursor-text"
-                    required
                   />
 
-                  <Select value={formData.country} onValueChange={(value) => handleInputChange("country", value)}>
+                  <Select
+                    value={formData.country}
+                    onValueChange={(value) =>
+                      handleInputChange("country", value)
+                    }
+                  >
                     <SelectTrigger className="cursor-pointer">
                       <SelectValue placeholder="Country" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Vietnam">Vietnam</SelectItem>
-                      <SelectItem value="Thailand">Thailand</SelectItem>
-                      <SelectItem value="Singapore">Singapore</SelectItem>
                     </SelectContent>
                   </Select>
 
                   <Input
                     placeholder="Address"
                     value={formData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
                     className="cursor-text"
                     required
                   />
@@ -184,7 +212,9 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                   <Input
                     placeholder="Province/City, District/County, Ward/Commune"
                     value={formData.location}
-                    onChange={(e) => handleInputChange("location", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("location", e.target.value)
+                    }
                     className="cursor-text"
                     required
                   />
@@ -199,7 +229,11 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
                     >
                       Cancel
                     </Button>
-                    <Button type="submit" className="flex-1 cursor-pointer" disabled={isSubmitting}>
+                    <Button
+                      type="submit"
+                      className="flex-1 cursor-pointer"
+                      disabled={isSubmitting}
+                    >
                       {isSubmitting ? "Processing..." : "Complete Order"}
                     </Button>
                   </div>
@@ -217,5 +251,5 @@ export default function CheckoutModal({ open, onOpenChange }: CheckoutModalProps
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

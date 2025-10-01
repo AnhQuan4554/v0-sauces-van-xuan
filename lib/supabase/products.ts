@@ -1,20 +1,5 @@
-import { Product } from "@/lib/products";
 import { createClient } from "./client";
-import { ProductCreate } from "@/app/types/products";
-
-export interface CreateProductData {
-  name: string;
-  name_en?: string;
-  price: number;
-  image_url?: string;
-  tags: string[];
-  description?: string;
-  description_en?: string;
-}
-
-export interface UpdateProductData extends Partial<CreateProductData> {
-  id: string;
-}
+import { Product, ProductCreate, ProductUpdate } from "@/app/types/products";
 
 // Get all products
 export async function getProducts(): Promise<Product[]> {
@@ -51,7 +36,7 @@ export async function getProduct(id: string): Promise<Product | null> {
 
 // Create new product
 export async function createProduct(
-  productData: CreateProductData
+  productData: ProductCreate
 ): Promise<ProductCreate> {
   const supabase = createClient();
   const { data, error, status } = await supabase
@@ -70,7 +55,7 @@ export async function createProduct(
 
 // Update product
 export async function updateProduct(
-  productData: UpdateProductData
+  productData: ProductUpdate
 ): Promise<Product> {
   const supabase = createClient();
   const { id, ...updateData } = productData;

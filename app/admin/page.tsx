@@ -27,7 +27,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Product, ProductCreate, ProductUpdate } from "../types/products";
-import { createProduct } from "../utils/supabase/products";
+import { createProduct } from "../../lib/supabase/products";
 
 const initialProducts: Product[] = [
   {
@@ -44,7 +44,7 @@ const initialProducts: Product[] = [
     name: "Green Pepper Sauce Tabasco 60ML",
     price: 79900,
     sold: 19,
-    image: "/green-tabasco-sauce-bottle.jpg",
+    image_url: "/green-tabasco-sauce-bottle.jpg",
     tags: [],
     description: "Classic green pepper sauce with authentic Tabasco flavor",
   },
@@ -53,7 +53,7 @@ const initialProducts: Product[] = [
     name: "Mild Salsa Doritos 300G",
     price: 179900,
     sold: 30,
-    image: "/mild-salsa-sauce-jar.jpg",
+    image_url: "/mild-salsa-sauce-jar.jpg",
     tags: ["MILD", "MILD", "MILD"],
     description: "Mild salsa sauce for those who prefer less heat",
   },
@@ -62,7 +62,7 @@ const initialProducts: Product[] = [
     name: "Bean Sauce Lee Kum Kee 240G",
     price: 25900,
     sold: 8,
-    image: "/asian-bean-sauce-jar.jpg",
+    image_url: "/asian-bean-sauce-jar.jpg",
     tags: [],
     description: "Traditional Asian bean sauce for authentic cooking",
   },
@@ -71,7 +71,7 @@ const initialProducts: Product[] = [
     name: "Pesto Genovese Sauce Barilla 190G",
     price: 179900,
     sold: 25,
-    image: "/pesto-sauce-jar.jpg",
+    image_url: "/pesto-sauce-jar.jpg",
     tags: [],
     description: "Authentic Italian pesto sauce made with fresh basil",
   },
@@ -80,7 +80,7 @@ const initialProducts: Product[] = [
     name: "Red Pepper Sauce Tabasco 60ML",
     price: 79900,
     sold: 42,
-    image: "/red-tabasco-sauce-bottle.jpg",
+    image_url: "/red-tabasco-sauce-bottle.jpg",
     tags: [],
     description: "Classic red pepper sauce with signature Tabasco heat",
   },
@@ -89,7 +89,7 @@ const initialProducts: Product[] = [
     name: "Tomato Sauce Heinz 300G",
     price: 39900,
     sold: 67,
-    image: "/heinz-tomato-sauce-bottle.jpg",
+    image_url: "/heinz-tomato-sauce-bottle.jpg",
     tags: [],
     description: "Premium tomato sauce perfect for all your cooking needs",
   },
@@ -98,7 +98,7 @@ const initialProducts: Product[] = [
     name: "Organic Sriracha Sauce Lumium 250G",
     price: 86900,
     sold: 15,
-    image: "/organic-sriracha-sauce-bottle.jpg",
+    image_url: "/organic-sriracha-sauce-bottle.jpg",
     tags: [],
     description: "Organic sriracha sauce with natural ingredients",
   },
