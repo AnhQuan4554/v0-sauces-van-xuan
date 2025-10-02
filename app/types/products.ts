@@ -10,12 +10,17 @@ export interface Product {
   description_en?: string;
 }
 
-export type ProductCreate = Omit<Product, "id">;
+export type ProductCreate = Omit<Product, 'id'>;
 
 export interface ProductUpdate extends Partial<ProductCreate> {
   id: string;
 }
 
 export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+  return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
 };
+
+// Interface custom
+export interface BuyNowProductInterface extends Product {
+  quantity: number;
+}
