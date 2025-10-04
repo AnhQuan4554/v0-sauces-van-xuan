@@ -1,5 +1,8 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -126,6 +129,10 @@
   }
 }
 
+body {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
 /* Updated floating social media buttons with smoother, more subtle animation */
 @keyframes gentle-float {
   0%,
@@ -176,7 +183,7 @@
 /* Ensure all buttons, links, and interactive elements have pointer cursor */
 button,
 a,
-[role="button"],
+[role='button'],
 .cursor-pointer {
   cursor: pointer;
 }
