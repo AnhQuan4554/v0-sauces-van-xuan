@@ -2,17 +2,18 @@ import ProductGrid from '@/components/product-grid';
 import Sidebar from '@/components/sidebar';
 import FloatingSocial from '@/components/floating-social';
 import MobileFilterToggle from '@/components/mobile-filter-toggle';
+import Pagination from '@/components/ui/pagination';
 
-interface PageProps {
+interface HomeProps {
   searchParams: {
     id?: string;
     name?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    currentPage?: string;
+    min_price?: string;
+    max_price?: string;
+    current_page?: string;
   };
 }
-export default function Home({ searchParams }: PageProps) {
+export default function Home({ searchParams }: HomeProps) {
   console.log('search parames', searchParams);
 
   // const [searchFilter, setSearchFilter] = useState({});
@@ -30,7 +31,7 @@ export default function Home({ searchParams }: PageProps) {
           <section className="lg:w-3/4">
             <MobileFilterToggle />
             <ProductGrid />
-            {/* <Pagination currentPage={1} totalPages={5} setCurrentPage={() => {}} /> */}
+            <Pagination totalPages={5} />
           </section>
         </div>
       </main>
