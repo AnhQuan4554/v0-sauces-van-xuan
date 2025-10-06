@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import CheckoutModal from '@/components/checkout-modal';
-import { BuyNowProductInterface } from '../types/products';
+import { BuyNowProductInterface } from '@/app/types/products';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<BuyNowProductInterface[]>([]);
@@ -117,7 +117,7 @@ export default function CartPage() {
                         <TableRow key={item.id}>
                           <TableCell>
                             <img
-                              src={item.image || '/placeholder.svg'}
+                              src={item.image_url || '/placeholder.svg'}
                               alt={item.name}
                               className="h-12 w-12 rounded object-cover lg:h-16 lg:w-16"
                             />
@@ -186,7 +186,7 @@ export default function CartPage() {
                   <div key={item.id} className="rounded-lg border bg-white p-3 sm:p-4">
                     <div className="flex gap-3 sm:gap-4">
                       <img
-                        src={item.image || '/placeholder.svg'}
+                        src={item.image_url || '/placeholder.svg'}
                         alt={item.name}
                         className="h-16 w-16 flex-shrink-0 rounded object-cover sm:h-20 sm:w-20"
                       />

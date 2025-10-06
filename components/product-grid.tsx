@@ -7,8 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { getProducts } from '@/lib/supabase/products';
-import { useRouter } from 'next/navigation';
 import { formatPrice, Product } from '@/app/types/products';
+import { useRouter } from '@/i18n/navigation';
 
 export default function ProductGrid() {
   const { toast } = useToast();
