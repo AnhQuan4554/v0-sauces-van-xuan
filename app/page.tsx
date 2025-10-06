@@ -1,19 +1,33 @@
-import Header from "@/components/header";
-import ProductGrid from "@/components/product-grid";
-import Sidebar from "@/components/sidebar";
-import Footer from "@/components/footer";
-import AdminModal from "@/components/admin-modal";
-import FloatingSocial from "@/components/floating-social";
-import MobileFilterToggle from "@/components/mobile-filter-toggle";
+import Header from '@/components/header';
+import ProductGrid from '@/components/product-grid';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import AdminModal from '@/components/admin-modal';
+import FloatingSocial from '@/components/floating-social';
+import MobileFilterToggle from '@/components/mobile-filter-toggle';
+import { useState } from 'react';
+import Pagination from '@/components/ui/pagination';
 
-export default function Home() {
+interface PageProps {
+  searchParams: {
+    id?: string;
+    name?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    currentPage?: string;
+  };
+}
+export default function Home({ searchParams }: PageProps) {
+  console.log('search parames', searchParams);
+
+  // const [searchFilter, setSearchFilter] = useState({});
   return (
-    <div className="min-h-screen bg-background">
-      <AdminModal />
+    <div className="bg-background min-h-screen">
+      {/* <AdminModal /> */}
       <FloatingSocial />
 
-      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
+      <main className="container mx-auto px-2 py-4 sm:px-4 sm:py-8">
+        <div className="flex flex-col gap-4 sm:gap-8 lg:flex-row">
           <aside className="hidden lg:block lg:w-1/4">
             <Sidebar />
           </aside>
@@ -21,6 +35,7 @@ export default function Home() {
           <section className="lg:w-3/4">
             <MobileFilterToggle />
             <ProductGrid />
+            {/* <Pagination currentPage={1} totalPages={5} setCurrentPage={() => {}} /> */}
           </section>
         </div>
       </main>

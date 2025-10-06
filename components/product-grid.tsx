@@ -17,7 +17,7 @@ export default function ProductGrid() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     loadProducts();
@@ -35,7 +35,7 @@ export default function ProductGrid() {
     }
   };
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     setFavorites((prev) =>
       prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
     );
@@ -149,7 +149,7 @@ export default function ProductGrid() {
                     </span>
                   </div>
 
-                  <div className="text-muted-foreground text-xs">Sold: {product.sold}</div>
+                  <div className="text-muted-foreground text-lg">Sold: {product.sold}</div>
 
                   <Button
                     className="bg-primary hover:bg-primary/90 text-primary-foreground soft-button mt-auto w-full cursor-pointer py-1.5 text-xs sm:py-2 sm:text-sm"
@@ -166,45 +166,6 @@ export default function ProductGrid() {
               </CardContent>
             </Card>
           ))}
-      </div>
-
-      {/* Pagination */}
-      <div className="mt-8 flex items-center justify-center gap-1 sm:gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="soft-button h-6 w-6 cursor-pointer rounded-full bg-transparent p-0 text-xs sm:h-8 sm:w-8 sm:text-sm"
-        >
-          1
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 cursor-pointer p-0 text-xs sm:h-8 sm:w-8 sm:text-sm"
-        >
-          2
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 cursor-pointer p-0 text-xs sm:h-8 sm:w-8 sm:text-sm"
-        >
-          3
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 cursor-pointer p-0 text-xs sm:h-8 sm:w-8 sm:text-sm"
-        >
-          4
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="cursor-pointer px-2 text-xs sm:px-3 sm:text-sm"
-        >
-          Next ›
-        </Button>
       </div>
     </div>
   );

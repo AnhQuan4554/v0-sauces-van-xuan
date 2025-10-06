@@ -25,3 +25,12 @@ export const formatPrice = (price: number): string => {
 export interface BuyNowProductInterface extends Product {
   quantity: number;
 }
+
+// Search Filter
+export interface SearchFilter {
+  name?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  limit?: number;
+  currentPage?: number;
+}

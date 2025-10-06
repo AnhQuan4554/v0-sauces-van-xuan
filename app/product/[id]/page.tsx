@@ -169,7 +169,7 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             <div>
               <div className="mb-4 flex items-start justify-between">
-                <div className="flex items-center space-y-2 pr-2">
+                <div className="flex items-center space-y-2 pr-2 sm:gap-4">
                   <h1 className="text-primary text-3xl font-bold text-balance">{product.name}</h1>
                   <h4 className="bg-accent text-input rounded-2xl p-1 text-center text-lg">
                     {' '}
