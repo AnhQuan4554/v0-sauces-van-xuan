@@ -12,6 +12,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
+import { Link } from '@/i18n/navigation';
 
 type Props = {
   children: React.ReactNode;
@@ -36,13 +37,11 @@ export default async function RootLayout({ children, params }: Props) {
   }
   const messages = await getMessages({ locale });
 
-  const t = await getTranslations('HomePage');
   return (
     <html lang={locale}>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={null}>
           <NextIntlClientProvider locale={locale} messages={messages}>
-            <h1>{t('title')}</h1>
             <Header />
             {children}
             <Toaster />

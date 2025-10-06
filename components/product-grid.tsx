@@ -89,8 +89,6 @@ export default function ProductGrid() {
             <span className="hidden sm:inline">Sauces And Pastes</span>
           </div>
         </div>
-
-        <div className="text-muted-foreground text-xs sm:text-sm">Show 1-20 of 77 products</div>
       </div>
 
       {/* Product Grid */}

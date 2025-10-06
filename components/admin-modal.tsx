@@ -27,8 +27,8 @@ export default function AdminModal({ open, onOpenChange }: AdminModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (code === process.env.ADMIN_CODE) {
+    console.log('process.env.ADMIN_CODE', process.env.NEXT_PUBLIC_ADMIN_CODE);
+    if (code.toString() === process.env.NEXT_PUBLIC_ADMIN_CODE?.toString()) {
       router.push('/admin');
       onOpenChange(false);
       setCode('');

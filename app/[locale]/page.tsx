@@ -1,12 +1,7 @@
-import Header from '@/components/header';
 import ProductGrid from '@/components/product-grid';
 import Sidebar from '@/components/sidebar';
-import Footer from '@/components/footer';
-import AdminModal from '@/components/admin-modal';
 import FloatingSocial from '@/components/floating-social';
 import MobileFilterToggle from '@/components/mobile-filter-toggle';
-import { useState } from 'react';
-import Pagination from '@/components/ui/pagination';
 
 interface PageProps {
   searchParams: {
