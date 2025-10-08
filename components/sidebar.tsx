@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { SearchFilter } from '@/app/types/products';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 const categories = [
   'FRUITS',
@@ -54,6 +55,8 @@ const DEFAULTFILTER: SearchFilter = {
 
 export default function Sidebar() {
   const router = useRouter();
+  const componentT = useTranslations('Component');
+  const titleT = useTranslations('Title');
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const initialFilter: SearchFilter = {
     ...DEFAULTFILTER,
@@ -85,7 +88,9 @@ export default function Sidebar() {
     <div className="space-y-4 sm:space-y-6">
       {/* Price Filter */}
       <div className="bg-card rounded-lg border p-3 sm:p-4">
-        <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Price</h3>
+        <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
+          {titleT('price')}
+        </h3>
         <div className="space-y-3 sm:space-y-4">
           <div className="text-muted-foreground text-xs sm:text-sm">
             {priceRange[0].toLocaleString('vi-VN')}đ - {priceRange[1].toLocaleString('vi-VN')}đ
@@ -104,14 +109,16 @@ export default function Sidebar() {
             className="soft-button w-full bg-transparent text-xs sm:text-sm"
             onClick={handleFilter}
           >
-            Filter
+            {componentT('Button.filter')}
           </Button>
         </div>
       </div>
 
       {/* Vendors */}
       <div className="bg-card rounded-lg border p-3 sm:p-4">
-        <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Vendors</h3>
+        <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
+          {titleT('vendors')}
+        </h3>
         <div className="max-h-48 space-y-1 overflow-y-auto sm:space-y-2">
           {vendors.map((vendor) => (
             <div key={vendor} className="flex items-center justify-between py-1">
@@ -125,7 +132,7 @@ export default function Sidebar() {
       {/* Product Tags */}
       <div className="bg-card rounded-lg border p-3 sm:p-4">
         <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
-          Product tags
+          {titleT('productTags')}
         </h3>
         <div className="flex flex-wrap gap-1 sm:gap-2">
           {productTags.map((tag) => (
@@ -143,7 +150,7 @@ export default function Sidebar() {
       </div>
 
       {/* Discover Categories */}
-      <div className="bg-card rounded-lg border p-3 sm:p-4">
+      {/* <div className="bg-card rounded-lg border p-3 sm:p-4">
         <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Discover</h3>
         <div className="max-h-64 space-y-1 overflow-y-auto sm:space-y-2">
           {categories.map((category) => (
@@ -155,7 +162,7 @@ export default function Sidebar() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

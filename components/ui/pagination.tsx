@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { Button } from './button';
-import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 type PaginationProps = {
   totalPages: number;
 };
@@ -25,6 +26,7 @@ function getPages(current: number, total: number) {
 
 const Pagination = ({ totalPages }: PaginationProps) => {
   const searchParams = useSearchParams();
+  const componentT = useTranslations('Component');
   const current_page = Number(searchParams?.get('current_page')) || 1;
   const pages = getPages(current_page, totalPages);
   const pathname = usePathname();
@@ -60,7 +62,7 @@ const Pagination = ({ totalPages }: PaginationProps) => {
         disabled={current_page === 1}
         onClick={handlePrev}
       >
-        &laquo; <span className="hidden sm:inline">Trang trước</span>
+        &laquo; <span className="hidden sm:inline">{componentT('Button.prePage')}</span>
       </Button>
 
       {/* Page numbers */}
@@ -94,7 +96,7 @@ const Pagination = ({ totalPages }: PaginationProps) => {
         disabled={current_page === totalPages}
         onClick={handleNext}
       >
-        <span className="hidden sm:inline">Trang sau</span> &raquo;
+        <span className="hidden sm:inline">{componentT('Button.nextPage')}</span> &raquo;
       </Button>
     </div>
   );

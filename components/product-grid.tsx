@@ -9,9 +9,13 @@ import { useToast } from '@/hooks/use-toast';
 import { getProducts } from '@/lib/supabase/products';
 import { formatPrice, Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function ProductGrid() {
   const { toast } = useToast();
+  const componentT = useTranslations('Component');
+  const titleT = useTranslations('Title');
+
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -80,19 +84,21 @@ export default function ProductGrid() {
       {/* Header */}
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-primary text-xl font-bold sm:text-2xl">Sauces And Pastes</h1>
+          <h1 className="text-primary text-xl font-bold sm:text-2xl">
+            {componentT('Navbar.allProducts')}
+          </h1>
           <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs sm:text-sm">
-            <span>Home</span>
+            <span>{titleT('home')}</span>
             <span>›</span>
-            <span>Products</span>
+            <span>{titleT('products')}</span>
             <span>›</span>
-            <span className="hidden sm:inline">Sauces And Pastes</span>
+            <span className="hidden sm:inline">Gia vị</span>
           </div>
         </div>
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 xl:grid-cols-4">
         {products &&
           products?.map((product) => (
             <Card
@@ -147,7 +153,9 @@ export default function ProductGrid() {
                     </span>
                   </div>
 
-                  <div className="text-muted-foreground text-lg">Sold: {product.sold}</div>
+                  <div className="text-muted-foreground text-lg">
+                    {titleT('sold')}: {product.sold}
+                  </div>
 
                   <Button
                     className="bg-primary hover:bg-primary/90 text-primary-foreground soft-button mt-auto w-full cursor-pointer py-1.5 text-xs sm:py-2 sm:text-sm"
@@ -157,8 +165,8 @@ export default function ProductGrid() {
                     }}
                   >
                     <ShoppingCart className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
-                    <span className="hidden sm:inline">ADD TO CART</span>
-                    <span className="sm:hidden">ADD</span>
+                    <span className="hidden sm:inline">{componentT('Button.addToCard')}</span>
+                    <span className="sm:hidden">{componentT('Button.add')}</span>
                   </Button>
                 </div>
               </CardContent>
