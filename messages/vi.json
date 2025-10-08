@@ -1,7 +1,4 @@
 {
-  "Test": {
-    "title": "Hello world!"
-  },
   "Page": {
     "HomePage": {
       "title": "Xin chào test!"
@@ -17,16 +14,32 @@
       "ourStory": "Về chúng tôi",
       "contactUs": "Liên hệ với chúng tôi"
     },
-    "Title": {
-      "price": "Giá",
-      "vendors": "Nhà cung cấp",
-      "productTags": "Loại sản phẩm",
-      "sold": "Bán được"
-    },
+
     "Button": {
       "buttonSearch": "Tìm kiếm",
       "filter": "Lọc",
-      "addToCard": "Thêm vào giò hàng"
+      "addToCard": "Thêm vào giò hàng",
+      "add": "Thêm",
+      "buyNow": "Mua ngay",
+      "nextPage": "Trang sau",
+      "prePage": "Trang trước"
     }
+  },
+  "Title": {
+    "price": "Giá",
+    "vendors": "Nhà cung cấp",
+    "productTags": "Loại sản phẩm",
+    "sold": "Đã bán",
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "outOfStock": "Hết hàng",
+    "inStock": "Còn hàng",
+    "productDescription": "Mô tả sản phẩm",
+    "productDetail": "Chi tiết sản phẩm",
+    "warehouse": "Kho",
+    "quantity": "Số lượng",
+    "email": "Email",
+    "followUs": "Theo dõi chúng tôi",
+    "paymentMethods": "Phương thức thanh toán"
   }
 }

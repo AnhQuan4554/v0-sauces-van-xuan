@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { useLocale } from 'next-intl';
 import { Button } from './button';
 import Image from 'next/image';
