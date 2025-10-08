@@ -1,5 +1,32 @@
 {
-  "HomePage": {
-    "title": "Xin chào test!"
+  "Test": {
+    "title": "Hello world!"
+  },
+  "Page": {
+    "HomePage": {
+      "title": "Xin chào test!"
+    }
+  },
+  "Component": {
+    "Header": {
+      "placeHolderTitle": "Tìm kiếm sản phẩm",
+      "hotlineSupport": "Số hỗ trợ"
+    },
+    "Navbar": {
+      "allProducts": "Tất cả sản phẩm",
+      "ourStory": "Về chúng tôi",
+      "contactUs": "Liên hệ với chúng tôi"
+    },
+    "Title": {
+      "price": "Giá",
+      "vendors": "Nhà cung cấp",
+      "productTags": "Loại sản phẩm",
+      "sold": "Bán được"
+    },
+    "Button": {
+      "buttonSearch": "Tìm kiếm",
+      "filter": "Lọc",
+      "addToCard": "Thêm vào giò hàng"
+    }
   }
 }
