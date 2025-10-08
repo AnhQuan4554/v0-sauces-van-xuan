@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import AdminModal from './admin-modal';
 import LanguageSelector from './ui/language-selector';
+import { useTranslations } from 'next-intl';
 
 export default function Header() {
+  const t = useTranslations('Component');
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -58,15 +60,15 @@ export default function Header() {
               <div className="relative mx-auto max-w-xs sm:max-w-md md:max-w-2xl">
                 <Input
                   type="text"
-                  placeholder="Search product..."
+                  placeholder={t('Header.placeHolderTitle')}
                   className="focus:border-primary w-full cursor-text rounded-lg border-2 border-gray-200 py-2 pr-12 pl-3 text-sm sm:py-2.5 sm:pr-20 sm:pl-4"
                 />
                 <Button
                   size="sm"
                   className="bg-primary hover:bg-primary/90 soft-button absolute top-1/2 right-0 h-7 -translate-y-1/2 cursor-pointer px-2 text-xs active:scale-95 sm:h-8 sm:px-4 sm:text-sm"
                 >
-                  <span className="hidden sm:inline">Search</span>
-                  <span className="sm:hidden">Go</span>
+                  <span className="hidden sm:inline">{t('Button.buttonSearch')}</span>
+                  <span className="sm:hidden">Search</span>
                 </Button>
               </div>
             </div>
@@ -79,7 +81,7 @@ export default function Header() {
                   <Phone className="text-primary h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-muted-foreground text-xs">Hotline Support</div>
+                  <div className="text-muted-foreground text-xs">{t('Header.hotlineSupport')}</div>
                   <div className="text-primary font-semibold">0903.166.228</div>
                 </div>
               </div>
@@ -140,15 +142,15 @@ export default function Header() {
                 variant="secondary"
                 className="bg-accent hover:bg-accent/90 soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm"
               >
-                Shop by Category
+                {t('Navbar.allProducts')}
               </Button>
 
               <div className="flex items-center gap-2 text-xs whitespace-nowrap sm:gap-4 sm:text-sm md:gap-6">
                 <a href="#" className="hover:text-accent cursor-pointer transition-colors">
-                  Our Story
+                  {t('Navbar.ourStory')}
                 </a>
                 <a href="#" className="hover:text-accent cursor-pointer transition-colors">
-                  Contact us
+                  {t('Navbar.contactUs')}
                 </a>
               </div>
             </div>
