@@ -26,17 +26,15 @@ const defaultData: Product = {
 export default function ProductDetailPage() {
   const params = useParams();
   const productId = String(params?.id);
-  console.log('productID', productId);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [product, setProduct] = useState<Product>(defaultData);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(0);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
 
   // Related products (same category or random selection)
-  const relatedProducts = allProducts?.filter((p) => p.id !== product?.id)?.slice(0, 4);
+  const relatedProducts = allProducts?.filter((p) => p.id !== product?.id)?.slice(0, 10);
 
   useEffect(() => {
     if (product) {
@@ -131,7 +129,6 @@ export default function ProductDetailPage() {
           <span>•</span>
           <span className="text-primary font-medium">{product.name}</span>
         </div>
-
         <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* Product Images */}
           <div className="space-y-4">
@@ -142,27 +139,6 @@ export default function ProductDetailPage() {
                 className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
               />
             </div>
-
-            {/* <div className="grid grid-cols-4 gap-3">
-              {relatedProducts &&
-                relatedProducts.map((item, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`aspect-square overflow-hidden rounded-lg border-2 transition-all ${
-                      selectedImage === index
-                        ? 'border-primary'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <img
-                      src={item.image_url || '/placeholder.svg'}
-                      alt={`${item.name} view ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-            </div> */}
           </div>
 
           {/* Product Info */}
@@ -308,40 +284,48 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-
         {/* Related Products */}
         <div className="space-y-8">
           <h2 className="text-primary text-2xl font-bold">{'Sản phẩm liên quan'}</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
-            {relatedProducts?.map((relatedProduct) => (
-              <Link key={relatedProduct.id} href={`/product/${relatedProduct.id}`}>
-                <Card className="product-card group border-border/50 hover:border-primary/20 bg-card cursor-pointer overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={
-                          relatedProduct.image_url ||
-                          '/placeholder.svg?height=250&width=250&query=premium spice sauce'
-                        }
-                        alt={relatedProduct.name}
-                        className="product-image h-48 w-full object-cover"
-                      />
-                    </div>
-                    <div className="space-y-2 p-4">
-                      <h3 className="text-primary line-clamp-2 text-sm font-medium">
-                        {relatedProduct.name}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-primary font-bold">
-                          {formatPrice(relatedProduct.price)}
-                        </span>
-                        <div className="flex items-center gap-1">{`Đã bán: ${product.sold}`}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+          <div className="relative w-full">
+            <h4 className="text-primary md:hidden">Trượt sang để xem thêm </h4>
+            <div className="carousel scrollbar-hide flex gap-4 overflow-x-auto py-2">
+              {relatedProducts?.map((relatedProduct, index) => (
+                <div
+                  key={relatedProduct.id}
+                  id={`slide-${index}`}
+                  className="carousel-item w-1/2 flex-shrink-0 sm:w-1/2 md:w-1/2 lg:w-1/4"
+                >
+                  <Link href={`/product/${relatedProduct.id}`}>
+                    <Card className="product-card group border-border/50 hover:border-primary/20 bg-card h-full cursor-pointer overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={
+                              relatedProduct.image_url ||
+                              '/placeholder.svg?height=250&width=250&query=premium spice sauce'
+                            }
+                            alt={relatedProduct.name}
+                            className="product-image h-48 w-full object-cover"
+                          />
+                        </div>
+                        <div className="space-y-2 p-4">
+                          <h3 className="text-primary line-clamp-2 min-h-[40px] text-sm font-medium">
+                            {relatedProduct.name}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-primary font-bold">
+                              {formatPrice(relatedProduct.price)}
+                            </span>
+                            <div className="flex items-center gap-1">{`Đã bán: ${relatedProduct.sold}`}</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>

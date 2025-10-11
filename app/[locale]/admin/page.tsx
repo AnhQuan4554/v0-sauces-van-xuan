@@ -28,6 +28,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Product, ProductCreate, ProductUpdate } from '@/app/types/products';
 import { createProduct } from '@/lib/supabase/products';
+import Image from 'next/image';
 
 const initialProducts: Product[] = [
   {
@@ -71,7 +72,6 @@ export default function AdminPage() {
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     const newProduct: ProductCreate = {
-      // id: Math.max(...products.map((p) => p.id)) + 1,
       name: formData.name,
       price: Number(formData.price),
       sold: 0,
@@ -79,7 +79,7 @@ export default function AdminPage() {
       tags: formData.tags,
       description: formData.description,
     };
-    // setProducts([...products, newProduct]);
+
     setFormData({
       name: '',
       price: 0,
@@ -113,9 +113,6 @@ export default function AdminPage() {
       description: formData.description,
     };
 
-    // setProducts(
-    //   products.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
-    // );
     setFormData({
       name: '',
       price: 0,
@@ -280,10 +277,12 @@ export default function AdminPage() {
                 {products.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <img
+                      <Image
                         src={product.image_url || '/placeholder.svg'}
                         alt={product.name}
                         className="h-12 w-12 rounded object-cover"
+                        width={20}
+                        height={20}
                       />
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>

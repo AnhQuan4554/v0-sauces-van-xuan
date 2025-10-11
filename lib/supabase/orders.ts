@@ -46,6 +46,93 @@ export async function createOrderItems(orderItem: CreateOrderItem) {
   return status;
 }
 
+type OrderItemRow = {
+  id: number;
+  quantity: number;
+  subtotal: number;
+  product: { name: string; image_url: string };
+  order: { customer_phone: string };
+};
+
+export interface OrderItem {
+  id: string;
+  quantity: number;
+  subtotal: number;
+  created_at: string;
+  product: {
+    name: string;
+    image_url: string | null;
+    price: number;
+  };
+  order: {
+    customer_phone: string;
+    status: string;
+  };
+}
+
+export async function getAllOrderItemsByPhone(phoneInput: string): Promise<OrderItem[]> {
+  let { data, error } = await supabase
+    .from('order_items')
+    .select(
+      `
+      id,
+      quantity,
+      subtotal,
+      created_at,
+      product:products (
+        name,
+        image_url,
+        price
+      ),
+      order:orders!inner (
+        customer_phone,
+        status
+      )
+    `
+    )
+    .eq('order.customer_phone', phoneInput);
+
+  if (error) throw error;
+
+  const formattedData: OrderItem[] = (data || []).map((item: any) => ({
+    id: item.id,
+    quantity: item.quantity,
+    product: item.product,
+    subtotal: item.subtotal,
+    order: item.order,
+    created_at: item.created_at,
+  }));
+
+  console.log('Formatted Data:', formattedData);
+  return formattedData;
+}
+// Get all order item dependent on
+// export async function getAllOrderItemsByPhone(phoneInput: string) {
+//   let { data, error } = await supabase
+//     .from('order_items')
+//     .select(
+//       `
+//     id,
+//     quantity,
+//     subtotal,
+//     product:products (
+//       name,
+//       image_url
+//     ),
+//    order:orders!inner (
+//       customer_phone
+//     )
+//   `
+//     )
+//     .eq('order.customer_phone', phoneInput);
+
+//   if (error) throw error;
+
+//   console.log(data);
+//   return data;
+//   // data[0].order_items => tất cả order_items của order đó
+// }
+
 // Cập nhật đơn hàng (orders)
 export async function updateOrder(orderId: string, updates: OrderUpdatePayload) {
   const { error } = await supabase

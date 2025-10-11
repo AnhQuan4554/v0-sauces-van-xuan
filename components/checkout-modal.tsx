@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Truck, MapPin } from 'lucide-react';
 import { DeliveryInfo, PaymentMethodType } from '@/app/types/deliveryInfor';
 import { BuyNowProductInterface, Product } from '@/app/types/products';
-import { CreateOrderItem, OrderItem, OrderItemInput } from '@/app/types/orders';
+import { OrderItemInput } from '@/app/types/orders';
 import { createOrder, createOrderItems } from '@/lib/supabase/orders';
 
 interface CheckoutModalProps {
@@ -46,10 +46,10 @@ export default function CheckoutModal({ open, onOpenChange, buyNowProduct }: Che
     try {
       // Calculate total amount
       let totalAmount = 0;
-      let arrProdcut: BuyNowProductInterface[] = [];
+      let arrProduct: BuyNowProductInterface[] = [];
       if (buyNowProduct) {
         totalAmount = buyNowProduct.price * buyNowProduct.quantity;
-        arrProdcut = [buyNowProduct];
+        arrProduct = [buyNowProduct];
       } else {
         // Get cart items from localStorage
         const newOrders = await JSON.parse(localStorage.getItem('cart') || '[]');
@@ -57,7 +57,7 @@ export default function CheckoutModal({ open, onOpenChange, buyNowProduct }: Che
           (sum: number, item: any) => sum + item.price * item.quantity,
           0
         );
-        arrProdcut = newOrders;
+        arrProduct = newOrders;
       }
 
       // Save order to database
@@ -73,13 +73,13 @@ export default function CheckoutModal({ open, onOpenChange, buyNowProduct }: Che
 
       console.log('Order saved successfully:', orderId);
       // Save order item
-      const orderItemInput: OrderItemInput[] = arrProdcut.map((item) => ({
+      const orderItemInput: OrderItemInput[] = arrProduct.map((item) => ({
         product_id: item.id,
         quantity: item.quantity,
         price_at_purchase: item.price,
       }));
 
-      const { status } =
+      const status =
         orderId &&
         createOrderItems({
           order_id: orderId,
