@@ -29,8 +29,8 @@ export interface BuyNowProductInterface extends Product {
 // Search Filter
 export interface SearchFilter {
   name?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  min_price?: number;
+  max_price?: number;
   limit?: number;
-  currentPage?: number;
+  current_page?: number;
 }

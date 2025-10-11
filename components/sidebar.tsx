@@ -5,7 +5,7 @@ import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { SearchFilter } from '@/app/types/products';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const categories = [
   'FRUITS',
@@ -46,9 +46,9 @@ const productTags = [
 
 const DEFAULTFILTER: SearchFilter = {
   name: undefined,
-  maxPrice: undefined,
-  minPrice: undefined,
-  currentPage: 1,
+  max_price: undefined,
+  min_price: undefined,
+  current_page: 1,
   limit: 20,
 };
 
@@ -57,18 +57,16 @@ export default function Sidebar() {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const initialFilter: SearchFilter = {
     ...DEFAULTFILTER,
-    minPrice: priceRange[0],
-    maxPrice: priceRange[1],
+    min_price: priceRange[0],
+    max_price: priceRange[1],
   };
-  const handleClick = () => {
-    router.push(`/?category=shoes&minPrice=100`);
-  };
+
   const [searchFilter, setSearchFilter] = useState<SearchFilter>(initialFilter);
 
   const handleFilter = () => {
     const params = new URLSearchParams();
 
-    // 🧠 Lặp qua tất cả key của filter
+    //  Lặp qua tất cả key của filter
     Object.entries(searchFilter).forEach(([key, value]) => {
       if (value && value !== '') {
         params.set(key, value);
@@ -81,7 +79,7 @@ export default function Sidebar() {
     router.push(url);
   };
   useEffect(() => {
-    setSearchFilter({ ...searchFilter, minPrice: priceRange[0], maxPrice: priceRange[1] });
+    setSearchFilter({ ...searchFilter, min_price: priceRange[0], max_price: priceRange[1] });
   }, [priceRange[0], priceRange[1]]);
   return (
     <div className="space-y-4 sm:space-y-6">

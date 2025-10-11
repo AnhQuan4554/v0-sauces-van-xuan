@@ -14,7 +14,8 @@ import {
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import CheckoutModal from '@/components/checkout-modal';
-import { BuyNowProductInterface } from '../types/products';
+import { BuyNowProductInterface } from '@/app/types/products';
+import Image from 'next/image';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<BuyNowProductInterface[]>([]);
@@ -27,7 +28,6 @@ export default function CartPage() {
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
-      removeItem(id);
       return;
     }
 
@@ -116,10 +116,12 @@ export default function CartPage() {
                       {cartItems.map((item) => (
                         <TableRow key={item.id}>
                           <TableCell>
-                            <img
-                              src={item.image || '/placeholder.svg'}
+                            <Image
+                              src={item.image_url || '/placeholder.svg'}
                               alt={item.name}
                               className="h-12 w-12 rounded object-cover lg:h-16 lg:w-16"
+                              width={48}
+                              height={48}
                             />
                           </TableCell>
                           <TableCell>
@@ -185,10 +187,12 @@ export default function CartPage() {
                 {cartItems.map((item) => (
                   <div key={item.id} className="rounded-lg border bg-white p-3 sm:p-4">
                     <div className="flex gap-3 sm:gap-4">
-                      <img
-                        src={item.image || '/placeholder.svg'}
+                      <Image
+                        src={item.image_url || '/placeholder.svg'}
                         alt={item.name}
                         className="h-16 w-16 flex-shrink-0 rounded object-cover sm:h-20 sm:w-20"
+                        width={48}
+                        height={48}
                       />
                       <div className="min-w-0 flex-1">
                         <h3 className="line-clamp-2 text-sm font-medium sm:text-base">
