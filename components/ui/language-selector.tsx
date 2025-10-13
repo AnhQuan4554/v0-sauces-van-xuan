@@ -17,17 +17,18 @@ export default function LanguageSelector() {
   return (
     <Button
       onClick={handleSwitchLanguage}
-      className="min-w-18 cursor-pointer rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800 transition hover:bg-amber-200 sm:px-3 sm:text-sm"
+      className="min-w-10 cursor-pointer rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800 transition hover:bg-amber-200 sm:px-3 sm:text-sm md:min-w-18"
     >
       {nextLocale.toUpperCase()}
 
-      <Image
-        src={`/language/${nextLocale === 'vi' ? 'vn' : 'usa'}.png`}
-        alt="VN"
-        width={20}
-        height={20}
-        className="mx-auto"
-      />
+      <div className="hidden md:block">
+        <Image
+          src={`/language/${nextLocale === 'vi' ? 'vn' : 'usa'}.png`}
+          alt="VN"
+          width={20}
+          height={20}
+        />
+      </div>
     </Button>
   );
 }
