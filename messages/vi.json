@@ -1,18 +1,30 @@
 {
   "Page": {
-    "HomePage": {
-      "title": "Xin chào test!"
+    "Cart": {
+      "title": "Giỏ hàng",
+      "shortTitle": "Giỏ",
+      "notifyEmpty": "Giỏ hàng của bạn đang trống",
+      "notifyAddProduct": "Hãy thêm sản phẩm để bắt đầu",
+      "button": {
+        "backToShop": "Quay lại cửa hàng",
+        "processToCheckout": "Tiến hành thanh toán",
+        "continueShopping": "Tiếp tục mua sắm",
+        "back": "Quay lại"
+      }
     }
   },
   "Component": {
     "Header": {
       "placeHolderTitle": "Tìm kiếm sản phẩm",
-      "hotlineSupport": "Số hỗ trợ"
+      "hotlineSupport": "Số hỗ trợ",
+      "myOrder": "Đơn hàng của tôi",
+      "enterPhoneNumber": "Nhập số điện thoại"
     },
     "Navbar": {
       "allProducts": "Tất cả sản phẩm",
       "ourStory": "Về chúng tôi",
-      "contactUs": "Liên hệ với chúng tôi"
+      "contactUs": "Liên hệ với chúng tôi",
+      "myOrder": "Đơn hàng của tôi"
     },
 
     "Button": {
@@ -22,7 +34,10 @@
       "add": "Thêm",
       "buyNow": "Mua ngay",
       "nextPage": "Trang sau",
-      "prePage": "Trang trước"
+      "prePage": "Trang trước",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận",
+      "ok": "OK"
     }
   },
   "Title": {
@@ -41,5 +56,13 @@
     "email": "Email",
     "followUs": "Theo dõi chúng tôi",
     "paymentMethods": "Phương thức thanh toán"
+  },
+  "Table": {
+    "img": "Hình ảnh",
+    "productName": "Tên sản phẩm",
+    "price": "Giá",
+    "quantity": "Số lượng",
+    "total": "Tổng cộng",
+    "action": "Thao tác"
   }
 }
