@@ -1,5 +1,67 @@
 {
-  "HomePage": {
-    "title": "Hello world!"
+  "Page": {
+    "Cart": {
+      "title": "Shopping Cart",
+      "shortTitle": "Cart",
+      "notifyEmpty": "Your cart is empty",
+      "notifyAddProduct": " Add some products to get started",
+      "button": {
+        "backToShop": "Back to shop",
+        "processToCheckout": "Processed to checkout",
+        "continueShopping": "Continue shopping",
+        "back": "Back"
+      }
+    }
+  },
+  "Component": {
+    "Header": {
+      "placeHolderTitle": "Search products",
+      "hotlineSupport": "Support hotline",
+      "myOrder": "My Order",
+      "enterPhoneNumber": "Enter your phone number"
+    },
+    "Navbar": {
+      "allProducts": "All products",
+      "ourStory": "About us",
+      "contactUs": "Contact us",
+      "myOrder": "My Order"
+    },
+    "Button": {
+      "buttonSearch": "Search",
+      "filter": "Filter",
+      "addToCard": "Add to cart",
+      "add": "Add",
+      "buyNow": "Buy now",
+      "nextPage": "Next page",
+      "prePage": "Previous page",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "ok": "OK"
+    }
+  },
+  "Title": {
+    "price": "Price",
+    "vendors": "Vendors",
+    "productTags": "Product type",
+    "sold": "Sold",
+    "home": "Home",
+    "products": "Products",
+    "outOfStock": "Out of stock",
+    "inStock": "In stock",
+    "productDescription": "Product description",
+    "productDetail": "Product details",
+    "warehouse": "Warehouse",
+    "quantity": "Quantity",
+    "email": "Email",
+    "followUs": "Follow us",
+    "paymentMethods": "Payment methods"
+  },
+  "Table": {
+    "img": "Image",
+    "productName": "Product Name",
+    "price": "Price",
+    "quantity": "Quantity",
+    "total": "Total",
+    "action": "Action"
   }
 }

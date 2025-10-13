@@ -9,19 +9,19 @@ import { useToast } from '@/hooks/use-toast';
 import { getProducts } from '@/lib/supabase/products';
 import { formatPrice, Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function ProductGrid() {
   const { toast } = useToast();
+  const componentT = useTranslations('Component');
+  const titleT = useTranslations('Title');
+
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  const [favorites, setFavorites] = useState<Product[]>([]);
 
   const loadProducts = async () => {
     try {
@@ -35,11 +35,23 @@ export default function ProductGrid() {
     }
   };
 
-  const toggleFavorite = (productId: string) => {
-    setFavorites((prev) =>
-      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
-    );
+  // ...existing code...
+  const toggleFavorite = (product: Product) => {
+    let updatedFavorites: Product[];
+    setFavorites((prev) => {
+      if (prev.some((item) => item.id === product.id)) {
+        updatedFavorites = prev.filter((item) => item.id !== product.id);
+      } else {
+        updatedFavorites = [...prev, product];
+      }
+      // Save to localStorage
+      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      // Trigger update event for other components/pages
+      window.dispatchEvent(new Event('favoritesUpdated'));
+      return updatedFavorites;
+    });
   };
+  // ...existing code...
 
   const addToCart = (product: (typeof products)[0]) => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -65,6 +77,13 @@ export default function ProductGrid() {
     window.dispatchEvent(new CustomEvent('cartUpdated'));
   };
 
+  useEffect(() => {
+    loadProducts();
+    // Initialize favorites from localStorage
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setFavorites(savedFavorites);
+  }, []);
+
   if (loading) {
     return (
       <div className="bg-background flex min-h-screen items-center justify-center">
@@ -80,19 +99,21 @@ export default function ProductGrid() {
       {/* Header */}
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-primary text-xl font-bold sm:text-2xl">Sauces And Pastes</h1>
+          <h1 className="text-primary text-xl font-bold sm:text-2xl">
+            {componentT('Navbar.allProducts')}
+          </h1>
           <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs sm:text-sm">
-            <span>Home</span>
+            <span>{titleT('home')}</span>
             <span>›</span>
-            <span>Products</span>
+            <span>{titleT('products')}</span>
             <span>›</span>
-            <span className="hidden sm:inline">Sauces And Pastes</span>
+            <span className="hidden sm:inline">Gia vị</span>
           </div>
         </div>
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 xl:grid-cols-4">
         {products &&
           products?.map((product) => (
             <Card
@@ -124,11 +145,14 @@ export default function ProductGrid() {
                     variant="ghost"
                     size="sm"
                     className="absolute top-1 right-1 cursor-pointer rounded-full bg-white/80 p-1 hover:bg-white sm:top-2 sm:right-2 sm:p-2"
-                    onClick={() => toggleFavorite(product.id)}
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.stopPropagation();
+                      toggleFavorite(product);
+                    }}
                   >
                     <Heart
                       className={`h-3 w-3 sm:h-4 sm:w-4 ${
-                        favorites.includes(product.id)
+                        favorites.some((item) => item.id === product.id)
                           ? 'fill-red-500 text-red-500'
                           : 'text-gray-500'
                       }`}
@@ -137,17 +161,19 @@ export default function ProductGrid() {
                 </div>
 
                 <div className="flex flex-grow flex-col space-y-1 text-center sm:space-y-2">
-                  <h3 className="text-primary line-clamp-2 flex min-h-[2.5rem] flex-grow items-center justify-center text-xs leading-tight font-medium sm:min-h-[3rem] sm:text-sm">
+                  <h3 className="text-primary line-clamp-2 flex flex-grow items-center justify-center text-sm leading-tight font-medium sm:text-sm">
                     {product.name}
                   </h3>
 
                   <div className="flex items-center justify-center">
-                    <span className="text-primary text-sm font-bold sm:text-lg">
+                    <span className="text-primary text-lg font-bold sm:text-sm">
                       {formatPrice(product.price)}
                     </span>
                   </div>
 
-                  <div className="text-muted-foreground text-lg">Sold: {product.sold}</div>
+                  <div className="text-muted-foreground text-lg">
+                    {titleT('sold')}: {product.sold}
+                  </div>
 
                   <Button
                     className="bg-primary hover:bg-primary/90 text-primary-foreground soft-button mt-auto w-full cursor-pointer py-1.5 text-xs sm:py-2 sm:text-sm"
@@ -157,8 +183,8 @@ export default function ProductGrid() {
                     }}
                   >
                     <ShoppingCart className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
-                    <span className="hidden sm:inline">ADD TO CART</span>
-                    <span className="sm:hidden">ADD</span>
+                    <span className="hidden sm:inline">{componentT('Button.addToCard')}</span>
+                    <span className="sm:hidden">{componentT('Button.add')}</span>
                   </Button>
                 </div>
               </CardContent>

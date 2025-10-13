@@ -11,6 +11,8 @@ import Link from 'next/link';
 import { getProduct, getProducts } from '@/lib/supabase/products';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice, Product } from '@/app/types/products';
+import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 const defaultData: Product = {
   id: '1',
@@ -26,17 +28,18 @@ const defaultData: Product = {
 export default function ProductDetailPage() {
   const params = useParams();
   const productId = String(params?.id);
-  console.log('productID', productId);
+  const componentT = useTranslations('Component');
+  const titleT = useTranslations('Title');
+
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [product, setProduct] = useState<Product>(defaultData);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(0);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
 
   // Related products (same category or random selection)
-  const relatedProducts = allProducts?.filter((p) => p.id !== product?.id)?.slice(0, 4);
+  const relatedProducts = allProducts?.filter((p) => p.id !== product?.id)?.slice(0, 10);
 
   useEffect(() => {
     if (product) {
@@ -124,45 +127,24 @@ export default function ProductDetailPage() {
         {/* Breadcrumb */}
         <div className="text-muted-foreground mb-8 flex items-center gap-2 text-sm">
           <Link href="/" className="hover:text-primary transition-colors">
-            {'home'}
+            {titleT('home')}
           </Link>
           <span>•</span>
-          <span>{'products'}</span>
+          <span>{titleT('products')}</span>
           <span>•</span>
           <span className="text-primary font-medium">{product.name}</span>
         </div>
-
         <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* Product Images */}
           <div className="space-y-4">
-            <div className="bg-muted aspect-square overflow-hidden rounded-2xl">
-              <img
+            <div className="bg-muted relative aspect-square h-full w-full overflow-hidden rounded-2xl">
+              <Image
                 src={product.image_url || '/placeholder.svg'}
                 alt={product.name}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-300 hover:scale-105"
               />
             </div>
-
-            {/* <div className="grid grid-cols-4 gap-3">
-              {relatedProducts &&
-                relatedProducts.map((item, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`aspect-square overflow-hidden rounded-lg border-2 transition-all ${
-                      selectedImage === index
-                        ? 'border-primary'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <img
-                      src={item.image_url || '/placeholder.svg'}
-                      alt={`${item.name} view ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-            </div> */}
           </div>
 
           {/* Product Info */}
@@ -173,7 +155,7 @@ export default function ProductDetailPage() {
                   <h1 className="text-primary text-3xl font-bold text-balance">{product.name}</h1>
                   <h4 className="bg-accent text-input rounded-2xl p-1 text-center text-lg">
                     {' '}
-                    {(product?.stock ?? 0) > 0 ? 'Còn hàng' : 'Hết hàng'}
+                    {(product?.stock ?? 0) > 0 ? titleT('inStock') : titleT('outOfStock')}
                   </h4>
                 </div>
 
@@ -219,15 +201,15 @@ export default function ProductDetailPage() {
             <Separator />
 
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">{`Số lượt đã bán: ${product.sold}`}</h3>
+              <h3 className="text-lg font-semibold">{`${titleT('sold')}: ${product.sold}`}</h3>
             </div>
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">
-                {`Hàng còn lại trong kho: ${product.stock}`}
+                {`${titleT('warehouse')}: ${product.stock}`}
               </h3>
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">{'Chi tiết sản phẩm'}</h3>
+              <h3 className="text-lg font-semibold">{titleT('productDescription')}</h3>
               <p className="text-muted-foreground leading-relaxed text-pretty">
                 {product.description ||
                   'This premium spice sauce is carefully crafted with the finest ingredients to deliver exceptional flavor and quality. Perfect for enhancing your culinary creations with authentic taste and aroma.'}
@@ -239,7 +221,7 @@ export default function ProductDetailPage() {
             {/* Quantity and Add to Cart */}
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <span className="font-medium">{'quantity'}:</span>
+                <span className="font-medium">{titleT('quantity')}:</span>
                 <div className="border-border flex items-center rounded-lg border">
                   <Button
                     variant="ghost"
@@ -267,13 +249,13 @@ export default function ProductDetailPage() {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground premium-button flex-1 py-3 text-lg font-medium"
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" />
-                  {'addToCart'}
+                  {componentT('Button.addToCard')}
                 </Button>
                 <Button
                   variant="outline"
                   className="premium-button bg-transparent px-8 py-3 text-lg font-medium"
                 >
-                  {'buyNow'}
+                  {componentT('Button.buyNow')}
                 </Button>
               </div>
             </div>
@@ -282,7 +264,7 @@ export default function ProductDetailPage() {
 
             {/* Product Details */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">{'productDetails'}</h3>
+              <h3 className="text-lg font-semibold">{titleT('productDetail')}</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -308,40 +290,49 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-
         {/* Related Products */}
         <div className="space-y-8">
           <h2 className="text-primary text-2xl font-bold">{'Sản phẩm liên quan'}</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
-            {relatedProducts?.map((relatedProduct) => (
-              <Link key={relatedProduct.id} href={`/product/${relatedProduct.id}`}>
-                <Card className="product-card group border-border/50 hover:border-primary/20 bg-card cursor-pointer overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={
-                          relatedProduct.image_url ||
-                          '/placeholder.svg?height=250&width=250&query=premium spice sauce'
-                        }
-                        alt={relatedProduct.name}
-                        className="product-image h-48 w-full object-cover"
-                      />
-                    </div>
-                    <div className="space-y-2 p-4">
-                      <h3 className="text-primary line-clamp-2 text-sm font-medium">
-                        {relatedProduct.name}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-primary font-bold">
-                          {formatPrice(relatedProduct.price)}
-                        </span>
-                        <div className="flex items-center gap-1">{`Đã bán: ${product.sold}`}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+          <div className="relative w-full">
+            <h4 className="text-primary md:hidden">Trượt sang để xem thêm </h4>
+            <div className="carousel scrollbar-hide flex gap-4 overflow-x-auto py-2">
+              {relatedProducts?.map((relatedProduct, index) => (
+                <div
+                  key={relatedProduct.id}
+                  id={`slide-${index}`}
+                  className="carousel-item w-1/2 flex-shrink-0 sm:w-1/2 md:w-1/2 lg:w-1/4"
+                >
+                  <Link href={`/product/${relatedProduct.id}`}>
+                    <Card className="product-card group border-border/50 hover:border-primary/20 bg-card h-full cursor-pointer overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="relative h-48 w-full overflow-hidden">
+                          <Image
+                            src={
+                              relatedProduct.image_url ||
+                              '/placeholder.svg?height=250&width=250&query=premium spice sauce'
+                            }
+                            alt={relatedProduct.name}
+                            fill
+                            className="product-image object-cover"
+                          />
+                        </div>
+                        <div className="space-y-2 p-4">
+                          <h3 className="text-primary line-clamp-2 min-h-[40px] text-sm font-medium">
+                            {relatedProduct.name}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-primary font-bold">
+                              {formatPrice(relatedProduct.price)}
+                            </span>
+                            <div className="flex items-center gap-1">{`Đã bán: ${relatedProduct.sold}`}</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>

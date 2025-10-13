@@ -15,8 +15,13 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import CheckoutModal from '@/components/checkout-modal';
 import { BuyNowProductInterface } from '@/app/types/products';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export default function CartPage() {
+  const tableT = useTranslations('Table');
+  const cartPageT = useTranslations('Page.Cart');
+
   const [cartItems, setCartItems] = useState<BuyNowProductInterface[]>([]);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
@@ -27,7 +32,6 @@ export default function CartPage() {
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
-      removeItem(id);
       return;
     }
 
@@ -67,15 +71,15 @@ export default function CartPage() {
               >
                 <ArrowLeft className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                 <span className="hidden text-xs sm:inline sm:text-sm lg:text-base">
-                  Back to Shop
+                  {cartPageT('button.backToShop')}
                 </span>
-                <span className="text-xs sm:hidden">Back</span>
+                <span className="text-xs sm:hidden">{cartPageT('button.back')}</span>
               </Button>
             </Link>
             <h1 className="text-primary flex items-center gap-1 text-lg font-bold sm:gap-2 sm:text-xl md:text-2xl lg:text-3xl">
               <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-8 lg:w-8" />
-              <span className="hidden sm:inline">Shopping Cart</span>
-              <span className="sm:hidden">Cart</span>
+              <span className="hidden sm:inline">{cartPageT('title')}</span>
+              <span className="sm:hidden">{cartPageT('title')}</span>
             </h1>
           </div>
           <div className="text-muted-foreground text-xs sm:text-sm">
@@ -86,13 +90,13 @@ export default function CartPage() {
         {cartItems.length === 0 ? (
           <div className="rounded-lg border bg-white py-8 text-center sm:py-12">
             <ShoppingBag className="text-muted-foreground mx-auto mb-3 h-12 w-12 sm:mb-4 sm:h-16 sm:w-16" />
-            <h2 className="mb-2 text-lg font-semibold sm:text-xl">Your cart is empty</h2>
+            <h2 className="mb-2 text-lg font-semibold sm:text-xl">{cartPageT('notifyEmpty')}</h2>
             <p className="text-muted-foreground mb-4 text-sm sm:mb-6 sm:text-base">
-              Add some products to get started
+              {cartPageT('notifyAddProduct')}
             </p>
             <Link href="/">
               <Button className="soft-button cursor-pointer px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base">
-                Continue Shopping
+                {cartPageT('button.continueShopping')}
               </Button>
             </Link>
           </div>
@@ -104,22 +108,30 @@ export default function CartPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-16 text-xs lg:text-sm">Image</TableHead>
-                        <TableHead className="text-xs lg:text-sm">Product</TableHead>
-                        <TableHead className="text-xs lg:text-sm">Price</TableHead>
-                        <TableHead className="text-center text-xs lg:text-sm">Quantity</TableHead>
-                        <TableHead className="text-xs lg:text-sm">Total</TableHead>
-                        <TableHead className="text-right text-xs lg:text-sm">Actions</TableHead>
+                        <TableHead className="w-16 text-xs lg:text-sm">{tableT('img')}</TableHead>
+                        <TableHead className="text-xs lg:text-sm">
+                          {tableT('productName')}
+                        </TableHead>
+                        <TableHead className="text-xs lg:text-sm">{tableT('price')}</TableHead>
+                        <TableHead className="text-center text-xs lg:text-sm">
+                          {tableT('quantity')}
+                        </TableHead>
+                        <TableHead className="text-xs lg:text-sm">{tableT('total')}</TableHead>
+                        <TableHead className="text-right text-xs lg:text-sm">
+                          {tableT('action')}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {cartItems.map((item) => (
                         <TableRow key={item.id}>
                           <TableCell>
-                            <img
+                            <Image
                               src={item.image_url || '/placeholder.svg'}
                               alt={item.name}
                               className="h-12 w-12 rounded object-cover lg:h-16 lg:w-16"
+                              width={48}
+                              height={48}
                             />
                           </TableCell>
                           <TableCell>
@@ -185,10 +197,12 @@ export default function CartPage() {
                 {cartItems.map((item) => (
                   <div key={item.id} className="rounded-lg border bg-white p-3 sm:p-4">
                     <div className="flex gap-3 sm:gap-4">
-                      <img
+                      <Image
                         src={item.image_url || '/placeholder.svg'}
                         alt={item.name}
                         className="h-16 w-16 flex-shrink-0 rounded object-cover sm:h-20 sm:w-20"
+                        width={48}
+                        height={48}
                       />
                       <div className="min-w-0 flex-1">
                         <h3 className="line-clamp-2 text-sm font-medium sm:text-base">

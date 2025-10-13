@@ -1,65 +1,58 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Heart, ArrowLeft, ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { useToast } from "@/hooks/use-toast"
-
-interface FavoriteItem {
-  id: number
-  name: string
-  price: number
-  image: string
-  vendor: string
-}
+import { useState, useEffect } from 'react';
+import { Heart, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
+import { formatPrice, Product } from '@/app/types/products';
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<FavoriteItem[]>([])
-  const { toast } = useToast()
+  const [favorites, setFavorites] = useState<Product[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]")
-    setFavorites(savedFavorites)
-  }, [])
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setFavorites(savedFavorites);
+  }, []);
 
-  const removeFromFavorites = (id: number) => {
-    const updatedFavorites = favorites.filter((item) => item.id !== id)
-    setFavorites(updatedFavorites)
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites))
-    window.dispatchEvent(new Event("favoritesUpdated"))
+  const removeFromFavorites = (id: string) => {
+    const updatedFavorites = favorites.filter((item) => item.id !== id);
+    setFavorites(updatedFavorites);
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    window.dispatchEvent(new Event('favoritesUpdated'));
 
     toast({
-      title: "Removed from favorites",
-      description: "Item has been removed from your favorites list.",
-    })
-  }
+      title: 'Removed from favorites',
+      description: 'Item has been removed from your favorites list.',
+    });
+  };
 
-  const addToCart = (item: FavoriteItem) => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]")
-    const existingItem = cart.find((cartItem: any) => cartItem.id === item.id)
+  const addToCart = (item: Product) => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItem = cart.find((cartItem: any) => cartItem.id === item.id);
 
     if (existingItem) {
-      existingItem.quantity += 1
+      existingItem.quantity += 1;
     } else {
-      cart.push({ ...item, quantity: 1 })
+      cart.push({ ...item, quantity: 1 });
     }
 
-    localStorage.setItem("cart", JSON.stringify(cart))
-    window.dispatchEvent(new Event("cartUpdated"))
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated'));
 
     toast({
-      title: "Added to cart",
+      title: 'Added to cart',
       description: `${item.name} has been added to your cart.`,
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center gap-4 mb-6">
+      <div className="mb-6 flex items-center gap-4">
         <Link href="/">
           <Button variant="outline" size="sm" className="soft-button bg-transparent">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Shop
           </Button>
         </Link>
@@ -67,10 +60,10 @@ export default function FavoritesPage() {
       </div>
 
       {favorites.length === 0 ? (
-        <div className="text-center py-12">
-          <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+        <div className="py-12 text-center">
+          <Heart className="text-muted-foreground mx-auto mb-4 h-16 w-16" />
           <p className="text-muted-foreground mb-4">No favorites yet</p>
-          <p className="text-sm text-muted-foreground mb-6">
+          <p className="text-muted-foreground mb-6 text-sm">
             Start adding products to your favorites by clicking the heart icon
           </p>
           <Link href="/">
@@ -78,32 +71,34 @@ export default function FavoritesPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {favorites.map((item) => (
-            <div key={item.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+            <div key={item.id} className="rounded-lg border p-4 transition-shadow hover:shadow-lg">
               <div className="relative mb-4">
                 <img
-                  src={item.image || "/placeholder.svg"}
+                  src={item.image_url || '/placeholder.svg'}
                   alt={item.name}
-                  className="w-full h-48 object-cover rounded"
+                  className="h-48 w-full rounded object-cover"
                 />
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="absolute top-2 right-2 soft-button"
+                  className="soft-button absolute top-2 right-2"
                   onClick={() => removeFromFavorites(item.id)}
                 >
                   <Heart className="h-4 w-4 fill-current" />
                 </Button>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm line-clamp-2">{item.name}</h3>
-                <p className="text-xs text-muted-foreground">{item.vendor}</p>
-                <p className="text-primary font-bold">{item.price.toLocaleString()}đ</p>
+              <div className="flex flex-col items-center space-y-2">
+                <h3 className="line-clamp-2 text-sm font-semibold">{item.name}</h3>
+                <span className="text-primary text-sm font-bold sm:text-lg">
+                  {formatPrice(item.price)}
+                </span>
+                <div className="text-muted-foreground text-lg">Sold: {item.sold}</div>
 
-                <Button className="w-full soft-button" size="sm" onClick={() => addToCart(item)}>
-                  <ShoppingCart className="h-4 w-4 mr-2" />
+                <Button className="soft-button w-full" size="sm" onClick={() => addToCart(item)}>
+                  <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
               </div>
@@ -112,5 +107,5 @@ export default function FavoritesPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
