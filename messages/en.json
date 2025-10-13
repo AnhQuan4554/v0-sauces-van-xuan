@@ -16,12 +16,15 @@
   "Component": {
     "Header": {
       "placeHolderTitle": "Search products",
-      "hotlineSupport": "Support hotline"
+      "hotlineSupport": "Support hotline",
+      "myOrder": "My Order",
+      "enterPhoneNumber": "Enter your phone number"
     },
     "Navbar": {
       "allProducts": "All products",
       "ourStory": "About us",
-      "contactUs": "Contact us"
+      "contactUs": "Contact us",
+      "myOrder": "My Order"
     },
     "Button": {
       "buttonSearch": "Search",
@@ -30,7 +33,10 @@
       "add": "Add",
       "buyNow": "Buy now",
       "nextPage": "Next page",
-      "prePage": "Previous page"
+      "prePage": "Previous page",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "ok": "OK"
     }
   },
   "Title": {
