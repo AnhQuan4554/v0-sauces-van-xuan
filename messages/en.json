@@ -36,13 +36,18 @@
       "prePage": "Previous page",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "ok": "OK"
+      "ok": "OK",
+      "backToShop": "Back to shop",
+      "back": "Back",
+      "edit": "Edit",
+      "delete": "Delete"
     }
   },
   "Title": {
     "price": "Price",
     "vendors": "Vendors",
     "productTags": "Product type",
+    "productName": "Product Name",
     "sold": "Sold",
     "home": "Home",
     "products": "Products",
@@ -54,7 +59,10 @@
     "quantity": "Quantity",
     "email": "Email",
     "followUs": "Follow us",
-    "paymentMethods": "Payment methods"
+    "paymentMethods": "Payment methods",
+    "orderManagement": "Order Management",
+    "editProduct": "Edit Product",
+    "updateTheProductDetail": "Update the product details"
   },
   "Table": {
     "img": "Image",
@@ -62,6 +70,8 @@
     "price": "Price",
     "quantity": "Quantity",
     "total": "Total",
-    "action": "Action"
+    "action": "Action",
+    "createDate": "Created date",
+    "status": "Status"
   }
 }

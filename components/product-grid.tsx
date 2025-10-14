@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { useEffect, useState } from 'react';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { getProducts } from '@/lib/supabase/products';
-import { formatPrice, Product } from '@/app/types/products';
+import { formatPrice, type Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -95,14 +97,14 @@ export default function ProductGrid() {
     );
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
         <div>
-          <h1 className="text-primary text-xl font-bold sm:text-2xl">
+          <h1 className="text-primary text-xl font-bold sm:text-2xl lg:text-3xl">
             {componentT('Navbar.allProducts')}
           </h1>
-          <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs sm:text-sm">
+          <div className="text-muted-foreground mt-1 flex items-center gap-1.5 text-xs sm:gap-2 sm:text-sm">
             <span>{titleT('home')}</span>
             <span>›</span>
             <span>{titleT('products')}</span>
@@ -113,27 +115,31 @@ export default function ProductGrid() {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5">
         {products &&
           products?.map((product) => (
             <Card
               key={product.id}
-              className="group flex h-full cursor-pointer flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="group flex h-full cursor-pointer flex-col transition-all duration-300 hover:scale-[1.02] hover:shadow-lg sm:hover:scale-105"
               onClick={() => router.push(`/product/${product.id}`)}
             >
-              <CardContent className="flex h-full flex-col p-2 sm:p-4">
-                <div className="relative mb-3 sm:mb-4">
+              <CardContent className="flex h-full flex-col p-2 sm:p-3 md:p-4">
+                <div className="relative mb-2 sm:mb-3 md:mb-4">
                   <img
                     src={product.image_url || '/placeholder.svg'}
                     alt={product.name}
-                    className="h-32 w-full rounded-lg object-cover sm:h-48"
+                    className="h-32 w-full rounded-lg object-cover sm:h-40 md:h-48 lg:h-52"
                   />
 
                   {/* Tags */}
                   {product.tags.length > 0 && (
-                    <div className="absolute top-1 left-1 flex flex-wrap gap-1 sm:top-2 sm:left-2">
+                    <div className="absolute top-1 left-1 flex flex-wrap gap-0.5 sm:top-2 sm:left-2 sm:gap-1">
                       {product.tags.slice(0, 2).map((tag, index) => (
-                        <Badge key={index} variant="destructive" className="px-1 py-0 text-xs">
+                        <Badge
+                          key={index}
+                          variant="destructive"
+                          className="px-1 py-0 text-[10px] sm:px-1.5 sm:text-xs"
+                        >
                           {tag}
                         </Badge>
                       ))}
@@ -144,14 +150,14 @@ export default function ProductGrid() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="absolute top-1 right-1 cursor-pointer rounded-full bg-white/80 p-1 hover:bg-white sm:top-2 sm:right-2 sm:p-2"
+                    className="absolute top-1 right-1 cursor-pointer rounded-full bg-white/80 p-1 hover:bg-white sm:top-2 sm:right-2 sm:p-1.5 md:p-2"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       toggleFavorite(product);
                     }}
                   >
                     <Heart
-                      className={`h-3 w-3 sm:h-4 sm:w-4 ${
+                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 ${
                         favorites.some((item) => item.id === product.id)
                           ? 'fill-red-500 text-red-500'
                           : 'text-gray-500'
@@ -160,29 +166,29 @@ export default function ProductGrid() {
                   </Button>
                 </div>
 
-                <div className="flex flex-grow flex-col space-y-1 text-center sm:space-y-2">
-                  <h3 className="text-primary line-clamp-2 flex flex-grow items-center justify-center text-sm leading-tight font-medium sm:text-sm">
+                <div className="flex flex-grow flex-col space-y-1 text-center sm:space-y-1.5 md:space-y-2">
+                  <h3 className="text-primary line-clamp-2 flex flex-grow items-center justify-center px-1 text-xs leading-tight font-medium sm:text-sm md:text-base">
                     {product.name}
                   </h3>
 
                   <div className="flex items-center justify-center">
-                    <span className="text-primary text-lg font-bold sm:text-sm">
+                    <span className="text-primary text-sm font-bold sm:text-base md:text-lg">
                       {formatPrice(product.price)}
                     </span>
                   </div>
 
-                  <div className="text-muted-foreground text-lg">
+                  <div className="text-muted-foreground text-[10px] sm:text-xs md:text-sm">
                     {titleT('sold')}: {product.sold}
                   </div>
 
                   <Button
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground soft-button mt-auto w-full cursor-pointer py-1.5 text-xs sm:py-2 sm:text-sm"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground soft-button mt-auto h-8 w-full cursor-pointer py-1.5 text-[10px] sm:h-9 sm:py-2 sm:text-xs md:h-10 md:py-2.5 md:text-sm"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       addToCart(product);
                     }}
                   >
-                    <ShoppingCart className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                    <ShoppingCart className="mr-1 h-3 w-3 sm:mr-1.5 sm:h-3.5 sm:w-3.5 md:mr-2 md:h-4 md:w-4" />
                     <span className="hidden sm:inline">{componentT('Button.addToCard')}</span>
                     <span className="sm:hidden">{componentT('Button.add')}</span>
                   </Button>

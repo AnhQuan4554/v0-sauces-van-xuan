@@ -37,13 +37,18 @@
       "prePage": "Trang trước",
       "cancel": "Hủy",
       "confirm": "Xác nhận",
-      "ok": "OK"
+      "ok": "OK",
+      "backToShop": "Quay lại cửa hàng",
+      "back": "Quay lại",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa"
     }
   },
   "Title": {
     "price": "Giá",
     "vendors": "Nhà cung cấp",
     "productTags": "Loại sản phẩm",
+    "productName": "Tên sản phẩm",
     "sold": "Đã bán",
     "home": "Trang chủ",
     "products": "Sản phẩm",
@@ -55,7 +60,10 @@
     "quantity": "Số lượng",
     "email": "Email",
     "followUs": "Theo dõi chúng tôi",
-    "paymentMethods": "Phương thức thanh toán"
+    "paymentMethods": "Phương thức thanh toán",
+    "orderManagement": "Quản lý đơn hàng",
+    "editProduct": "Chỉnh sửa sản phẩm",
+    "updateTheProductDetail": "Cập nhật chi tiết sản phẩm"
   },
   "Table": {
     "img": "Hình ảnh",
@@ -63,6 +71,8 @@
     "price": "Giá",
     "quantity": "Số lượng",
     "total": "Tổng cộng",
-    "action": "Thao tác"
+    "action": "Thao tác",
+    "createDate": "Ngày tạo",
+    "status": "Trạng thái"
   }
 }
