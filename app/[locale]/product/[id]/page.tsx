@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Heart, ShoppingCart, Star, Minus, Plus, ArrowLeft, Share2 } from 'lucide-react';
+import { Heart, ShoppingCart, Minus, Plus, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { getProduct, getProducts } from '@/lib/supabase/products';
 import { Separator } from '@/components/ui/separator';
-import { formatPrice, Product } from '@/app/types/products';
+import { formatPrice, type Product } from '@/app/types/products';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
@@ -38,7 +38,6 @@ export default function ProductDetailPage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
 
-  // Related products (same category or random selection)
   const relatedProducts = allProducts?.filter((p) => p.id !== product?.id)?.slice(0, 10);
 
   useEffect(() => {
@@ -48,13 +47,10 @@ export default function ProductDetailPage() {
     }
   }, [product]);
 
-  // Handle get all product and detail product
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        //Get all product
         const data = await getProducts();
-        // Get product detail
         const dataDetail = await getProduct(productId);
         dataDetail && setProduct(dataDetail);
         data && setAllProducts(data);
@@ -74,7 +70,7 @@ export default function ProductDetailPage() {
       <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          <p>Loading products...</p>
+          <p className="text-sm sm:text-base">Loading products...</p>
         </div>
       </div>
     );
@@ -96,9 +92,7 @@ export default function ProductDetailPage() {
 
     toast({
       title: isFavorite ? 'addedToFavorites' : 'addedToFavorites',
-      description: `${product.name} has been ${
-        isFavorite ? 'removed from' : 'added to'
-      } your favorites`,
+      description: `${product.name} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
     });
   };
 
@@ -123,21 +117,20 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <main className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="text-muted-foreground mb-8 flex items-center gap-2 text-sm">
+      <main className="container mx-auto px-3 py-6 sm:px-4 sm:py-8 lg:px-6 lg:py-12">
+        <div className="text-muted-foreground mb-6 flex items-center gap-2 text-xs sm:mb-8 sm:text-sm">
           <Link href="/" className="hover:text-primary transition-colors">
             {titleT('home')}
           </Link>
           <span>•</span>
           <span>{titleT('products')}</span>
           <span>•</span>
-          <span className="text-primary font-medium">{product.name}</span>
+          <span className="text-primary line-clamp-1 font-medium">{product.name}</span>
         </div>
-        <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
-          {/* Product Images */}
+
+        <div className="mb-12 grid grid-cols-1 gap-6 sm:mb-16 sm:gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="space-y-4">
-            <div className="bg-muted relative aspect-square h-full w-full overflow-hidden rounded-2xl">
+            <div className="bg-muted relative aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl">
               <Image
                 src={product.image_url || '/placeholder.svg'}
                 alt={product.name}
@@ -147,16 +140,16 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div>
-              <div className="mb-4 flex items-start justify-between">
-                <div className="flex items-center space-y-2 pr-2 sm:gap-4">
-                  <h1 className="text-primary text-3xl font-bold text-balance">{product.name}</h1>
-                  <h4 className="bg-accent text-input rounded-2xl p-1 text-center text-lg">
-                    {' '}
+              <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-2 sm:gap-3">
+                  <h1 className="text-primary text-2xl font-bold text-balance sm:text-3xl lg:text-4xl">
+                    {product.name}
+                  </h1>
+                  <Badge className="bg-accent text-input w-fit rounded-xl px-3 py-1 text-center text-sm sm:text-base">
                     {(product?.stock ?? 0) > 0 ? titleT('inStock') : titleT('outOfStock')}
-                  </h4>
+                  </Badge>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -164,31 +157,35 @@ export default function ProductDetailPage() {
                     variant="ghost"
                     size="sm"
                     onClick={toggleFavorite}
-                    className="premium-button rounded-full p-3"
+                    className="premium-button rounded-full p-2 sm:p-3"
                   >
                     <Heart
-                      className={`h-5 w-5 ${
+                      className={`h-5 w-5 sm:h-6 sm:w-6 ${
                         isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
                       }`}
                     />
                   </Button>
-                  <Button variant="ghost" size="sm" className="premium-button rounded-full p-3">
-                    <Share2 className="text-muted-foreground h-5 w-5" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="premium-button rounded-full p-2 sm:p-3"
+                  >
+                    <Share2 className="text-muted-foreground h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                 </div>
               </div>
 
-              <div className="mb-6 flex items-center gap-3">
-                <span className="text-primary text-4xl font-bold">
+              <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center">
+                <span className="text-primary text-3xl font-bold sm:text-4xl lg:text-5xl">
                   {formatPrice(product.price)}
                 </span>
                 {product.tags.length > 0 && (
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {product.tags.slice(0, 2).map((tag, index) => (
                       <Badge
                         key={index}
                         variant="secondary"
-                        className="bg-accent/20 text-accent-foreground font-bold"
+                        className="bg-accent/20 text-accent-foreground text-xs font-bold sm:text-sm"
                       >
                         {tag}
                       </Badge>
@@ -201,16 +198,16 @@ export default function ProductDetailPage() {
             <Separator />
 
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">{`${titleT('sold')}: ${product.sold}`}</h3>
+              <h3 className="text-base font-semibold sm:text-lg">{`${titleT('sold')}: ${product.sold}`}</h3>
             </div>
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold">
-                {`${titleT('warehouse')}: ${product.stock}`}
+              <h3 className="text-base font-semibold sm:text-lg">{`${titleT('warehouse')}: ${product.stock}`}</h3>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-base font-semibold sm:text-lg lg:text-xl">
+                {titleT('productDescription')}
               </h3>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">{titleT('productDescription')}</h3>
-              <p className="text-muted-foreground leading-relaxed text-pretty">
+              <p className="text-muted-foreground text-sm leading-relaxed text-pretty sm:text-base">
                 {product.description ||
                   'This premium spice sauce is carefully crafted with the finest ingredients to deliver exceptional flavor and quality. Perfect for enhancing your culinary creations with authentic taste and aroma.'}
               </p>
@@ -218,42 +215,43 @@ export default function ProductDetailPage() {
 
             <Separator />
 
-            {/* Quantity and Add to Cart */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <span className="font-medium">{titleT('quantity')}:</span>
-                <div className="border-border flex items-center rounded-lg border">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                <span className="text-sm font-medium sm:text-base">{titleT('quantity')}:</span>
+                <div className="border-border flex w-fit items-center rounded-lg border">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="hover:bg-muted px-3 py-2"
+                    className="hover:bg-muted h-9 px-3 py-2 sm:h-10"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
-                  <span className="min-w-[3rem] px-4 py-2 text-center font-medium">{quantity}</span>
+                  <span className="min-w-[3rem] px-3 py-2 text-center text-sm font-medium sm:text-base">
+                    {quantity}
+                  </span>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="hover:bg-muted px-3 py-2"
+                    className="hover:bg-muted h-9 px-3 py-2 sm:h-10"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Button
                   onClick={addToCart}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground premium-button flex-1 py-3 text-lg font-medium"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground premium-button h-11 flex-1 text-base font-medium sm:h-12 sm:text-lg"
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   {componentT('Button.addToCard')}
                 </Button>
                 <Button
                   variant="outline"
-                  className="premium-button bg-transparent px-8 py-3 text-lg font-medium"
+                  className="premium-button h-11 bg-transparent text-base font-medium sm:h-12 sm:px-8 sm:text-lg"
                 >
                   {componentT('Button.buyNow')}
                 </Button>
@@ -262,10 +260,11 @@ export default function ProductDetailPage() {
 
             <Separator />
 
-            {/* Product Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">{titleT('productDetail')}</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base font-semibold sm:text-lg lg:text-xl">
+                {titleT('productDetail')}
+              </h3>
+              <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4 sm:text-base">
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{'category'}:</span>
@@ -290,41 +289,47 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-        {/* Related Products */}
-        <div className="space-y-8">
-          <h2 className="text-primary text-2xl font-bold">{'Sản phẩm liên quan'}</h2>
+
+        <div className="space-y-6 sm:space-y-8">
+          <h2 className="text-primary text-xl font-bold sm:text-2xl lg:text-3xl">
+            {'Sản phẩm liên quan'}
+          </h2>
           <div className="relative w-full">
-            <h4 className="text-primary md:hidden">Trượt sang để xem thêm </h4>
-            <div className="carousel scrollbar-hide flex gap-4 overflow-x-auto py-2">
+            <h4 className="text-primary mb-3 text-sm sm:text-base md:hidden">
+              Trượt sang để xem thêm
+            </h4>
+            <div className="carousel scrollbar-hide flex gap-3 overflow-x-auto py-2 sm:gap-4">
               {relatedProducts?.map((relatedProduct, index) => (
                 <div
                   key={relatedProduct.id}
                   id={`slide-${index}`}
-                  className="carousel-item w-1/2 flex-shrink-0 sm:w-1/2 md:w-1/2 lg:w-1/4"
+                  className="carousel-item w-[45%] flex-shrink-0 sm:w-1/3 md:w-1/4 lg:w-1/5"
                 >
                   <Link href={`/product/${relatedProduct.id}`}>
                     <Card className="product-card group border-border/50 hover:border-primary/20 bg-card h-full cursor-pointer overflow-hidden">
                       <CardContent className="p-0">
-                        <div className="relative h-48 w-full overflow-hidden">
+                        <div className="relative h-36 w-full overflow-hidden sm:h-40 lg:h-48">
                           <Image
                             src={
                               relatedProduct.image_url ||
-                              '/placeholder.svg?height=250&width=250&query=premium spice sauce'
+                              '/placeholder.svg?height=250&width=250&query=premium spice sauce' ||
+                              '/placeholder.svg' ||
+                              '/placeholder.svg'
                             }
                             alt={relatedProduct.name}
                             fill
                             className="product-image object-cover"
                           />
                         </div>
-                        <div className="space-y-2 p-4">
-                          <h3 className="text-primary line-clamp-2 min-h-[40px] text-sm font-medium">
+                        <div className="space-y-2 p-3 sm:p-4">
+                          <h3 className="text-primary line-clamp-2 min-h-[36px] text-xs font-medium sm:min-h-[40px] sm:text-sm">
                             {relatedProduct.name}
                           </h3>
-                          <div className="flex items-center justify-between">
-                            <span className="text-primary font-bold">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                            <span className="text-primary text-sm font-bold sm:text-base">
                               {formatPrice(relatedProduct.price)}
                             </span>
-                            <div className="flex items-center gap-1">{`Đã bán: ${relatedProduct.sold}`}</div>
+                            <div className="text-muted-foreground text-xs sm:text-sm">{`Đã bán: ${relatedProduct.sold}`}</div>
                           </div>
                         </div>
                       </CardContent>
