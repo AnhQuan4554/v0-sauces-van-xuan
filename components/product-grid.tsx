@@ -12,6 +12,8 @@ import { getProducts } from '@/lib/supabase/products';
 import { formatPrice, type Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ProductGrid() {
   const { toast } = useToast();
@@ -125,10 +127,12 @@ export default function ProductGrid() {
             >
               <CardContent className="flex h-full flex-col p-2 sm:p-3 md:p-4">
                 <div className="relative mb-2 sm:mb-3 md:mb-4">
-                  <img
+                  <Image
                     src={product.image_url || '/placeholder.svg'}
                     alt={product.name}
                     className="h-32 w-full rounded-lg object-cover sm:h-40 md:h-48 lg:h-52"
+                    width={128}
+                    height={128}
                   />
 
                   {/* Tags */}
