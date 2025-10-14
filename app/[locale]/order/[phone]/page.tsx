@@ -27,6 +27,8 @@ import { useToast } from '@/hooks/use-toast';
 import { formatPrice } from '@/app/utils/format-price';
 import Image from 'next/image';
 import { getAllOrderItemsByPhone } from '@/lib/supabase/orders';
+import { formatDate } from '@/app/utils/format-date';
+import { useTranslations } from 'next-intl';
 
 interface OrderTableRow {
   orderItemId: string;
@@ -83,8 +85,9 @@ interface OrderCustomerProps {
 }
 const OrderCustomer = ({ params }: OrderCustomerProps) => {
   const { phone } = params;
-  console.log('parame/phone', phone);
   const { toast } = useToast();
+  const t = useTranslations();
+  console.log('parame/phone', phone);
   const [orders, setOrders] = useState<OrderTableRow[]>([]);
   const [orderDetail, setOrderDetail] = useState<OrderTableRow>(initialOrderDetail);
   const [loading, setLoading] = useState(true);
@@ -128,7 +131,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
       <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          <p className="text-sm sm:text-base">Loading products...</p>
+          <p className="text-sm sm:text-base">Loading Order...</p>
         </div>
       </div>
     );
@@ -145,12 +148,12 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                 className="soft-button h-9 w-fit cursor-pointer bg-transparent text-xs sm:h-10 sm:text-sm"
               >
                 <ArrowLeft className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
-                <span className="xs:inline hidden">Back to Shop</span>
-                <span className="xs:hidden">Back</span>
+                <span className="xs:inline hidden">{t('Component.Button.backToShop')}</span>
+                <span className="xs:hidden">{t('Component.Button.back')}</span>
               </Button>
             </Link>
             <h1 className="text-primary text-xl font-bold sm:text-2xl lg:text-3xl">
-              Order Management
+              {t('Title.orderManagement')}
             </h1>
           </div>
         </div>
@@ -160,14 +163,16 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-16 text-sm lg:w-20">Image</TableHead>
-                  <TableHead className="min-w-[140px] text-sm">Name</TableHead>
-                  <TableHead className="min-w-[90px] text-sm">Price</TableHead>
-                  <TableHead className="min-w-[80px] text-sm">Quantity</TableHead>
-                  <TableHead className="min-w-[110px] text-sm">Total Amount</TableHead>
-                  <TableHead className="min-w-[100px] text-sm">Status</TableHead>
-                  <TableHead className="min-w-[120px] text-sm">Created date</TableHead>
-                  <TableHead className="min-w-[110px] text-right text-sm">Actions</TableHead>
+                  <TableHead className="w-16 text-sm lg:w-20">{t('Table.img')}</TableHead>
+                  <TableHead className="min-w-[140px] text-sm">{t('Table.productName')}</TableHead>
+                  <TableHead className="min-w-[90px] text-sm">{t('Table.price')}</TableHead>
+                  <TableHead className="min-w-[80px] text-sm">{t('Table.quantity')}</TableHead>
+                  <TableHead className="min-w-[110px] text-sm">{t('Table.total')}</TableHead>
+                  <TableHead className="min-w-[100px] text-sm">{t('Table.status')}</TableHead>
+                  <TableHead className="min-w-[120px] text-sm">{t('Table.createDate')}</TableHead>
+                  <TableHead className="min-w-[110px] text-right text-sm">
+                    {t('Table.action')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -188,8 +193,24 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                     </TableCell>
                     <TableCell className="p-3 text-sm lg:p-4">{order.quantity}</TableCell>
                     <TableCell className="p-3 text-sm lg:p-4">{order.totalAmount}</TableCell>
-                    <TableCell className="p-3 text-sm lg:p-4">{order.status}</TableCell>
-                    <TableCell className="p-3 text-sm lg:p-4">{order.createdDate}</TableCell>
+                    <TableCell
+                      className={`p-3 text-sm lg:p-4 ${
+                        order.status === 'pending'
+                          ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                          : order.status === 'processing'
+                            ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                            : order.status === 'completed'
+                              ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                              : order.status === 'cancelled'
+                                ? 'bg-red-100 text-red-800 hover:bg-red-200'
+                                : ''
+                      }`}
+                    >
+                      {order.status}
+                    </TableCell>
+                    <TableCell className="p-3 text-sm lg:p-4">
+                      {formatDate(order.createdDate)}
+                    </TableCell>
                     <TableCell className="p-3 text-right lg:p-4">
                       <div className="flex justify-end gap-2">
                         <Button
@@ -239,21 +260,21 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
 
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
                       <div>
-                        <span className="text-muted-foreground">Price:</span>
+                        <span className="text-muted-foreground">{t('Table.price')}:</span>
                         <span className="text-primary ml-1 font-semibold">
                           {formatPrice(order.price)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Qty:</span>
+                        <span className="text-muted-foreground">{t('Table.quantity')}:</span>
                         <span className="ml-1 font-medium">{order.quantity}</span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Total:</span>
+                        <span className="text-muted-foreground">{t('Table.total')}:</span>
                         <span className="ml-1 font-medium">{order.totalAmount}</span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Status:</span>
+                        <span className="text-muted-foreground">{t('Table.status')}:</span>
                         <span className="ml-1 font-medium">{order.status}</span>
                       </div>
                     </div>
@@ -269,7 +290,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                         className="soft-button h-8 flex-1 cursor-pointer text-xs"
                       >
                         <Edit className="mr-1 h-3 w-3" />
-                        Edit
+                        {t('Component.Button.edit')}
                       </Button>
                       <Button
                         variant="destructive"
@@ -278,7 +299,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                         className="soft-button h-8 flex-1 cursor-pointer text-xs"
                       >
                         <Trash2 className="mr-1 h-3 w-3" />
-                        Delete
+                        {t('Component.Button.delete')}
                       </Button>
                     </div>
                   </div>
@@ -291,20 +312,17 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="mx-3 max-h-[85vh] w-[calc(100%-1.5rem)] max-w-[425px] overflow-y-auto sm:mx-auto sm:max-h-[90vh]">
             <DialogHeader>
-              <DialogTitle className="text-base sm:text-lg">Edit Product</DialogTitle>
-              <DialogDescription className="text-xs sm:text-sm">
-                Update the product details.
-              </DialogDescription>
+              <DialogTitle className="text-base sm:text-lg">{t('Title.editProduct')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleEditOrder} className="space-y-3 sm:space-y-4">
               <div className="space-y-1.5 sm:space-y-2">
                 <Label htmlFor="edit-name" className="text-xs sm:text-sm">
-                  Product Name
+                  {t('Title.productName')}
                 </Label>
                 <Input
                   id="edit-name"
                   value={orderDetail?.productName}
-                  placeholder="Enter product name"
+                  placeholder={t('Title.productName')}
                   required
                   className="h-9 cursor-text text-xs sm:h-10 sm:text-sm"
                   disabled
@@ -312,7 +330,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
               </div>
               <div className="space-y-1.5 sm:space-y-2">
                 <Label htmlFor="edit-price" className="text-xs sm:text-sm">
-                  Price (VND)
+                  {t('Title.price')} (VND)
                 </Label>
                 <Input
                   id="edit-price"
@@ -335,7 +353,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
               </div>
               <div className="space-y-1.5 sm:space-y-2">
                 <Label htmlFor="edit-status" className="text-xs sm:text-sm">
-                  Status
+                  {t('Table.status')}
                 </Label>
                 <Dialog>
                   <DialogTrigger asChild>

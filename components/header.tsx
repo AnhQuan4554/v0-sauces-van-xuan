@@ -10,7 +10,7 @@ import Link from 'next/link';
 import AdminModal from './admin-modal';
 import LanguageSelector from './ui/language-selector';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Label } from './ui/label';
 
@@ -18,7 +18,7 @@ export default function Header() {
   const t = useTranslations('Component');
   const bt = useTranslations('Component.Button');
   const router = useRouter();
-
+  const pathname = usePathname();
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -65,7 +65,7 @@ export default function Header() {
       <header className="border-b bg-white">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between gap-2 py-3 sm:gap-3 sm:py-4 lg:gap-4">
-            {/* Mobile menu icon */}
+            {/* Mobile menu button */}
             <button
               className="flex items-center justify-center rounded-md p-2 md:hidden"
               onClick={() => setShowMobileNav((prev) => !prev)}
@@ -73,6 +73,7 @@ export default function Header() {
             >
               <Menu className="text-primary h-6 w-6" />
             </button>
+
             {/* Logo */}
             <Link href="/" className="flex flex-shrink-0 cursor-pointer items-center">
               <div className="text-primary text-xl font-bold sm:text-2xl lg:text-3xl">
@@ -92,7 +93,7 @@ export default function Header() {
                 />
                 <Button
                   size="sm"
-                  className="bg-primary hover:bg-primary/90 soft-button absolute top-1/2 right-1 h-[90%] -translate-y-1/2 cursor-pointer px-3 text-xs active:scale-95 sm:px-4 sm:text-sm"
+                  className="bg-primary hover:bg-primary/90 soft-button absolute top-1/2 right-1 h-7 -translate-y-1/2 cursor-pointer px-3 text-xs active:scale-95 sm:h-8 sm:px-4 sm:text-sm lg:h-11"
                 >
                   <span className="hidden lg:inline">{t('Button.buttonSearch')}</span>
                   <span className="lg:hidden">Search</span>
@@ -167,7 +168,7 @@ export default function Header() {
               />
               <Button
                 size="sm"
-                className="bg-primary hover:bg-primary/90 soft-button absolute top-1/2 right-1 h-[90%] -translate-y-1/2 cursor-pointer px-3 text-xs active:scale-95"
+                className="bg-primary hover:bg-primary/90 soft-button absolute top-1/2 right-1 h-7 -translate-y-1/2 cursor-pointer px-3 text-xs active:scale-95"
               >
                 Search
               </Button>
@@ -175,79 +176,119 @@ export default function Header() {
           </div>
         </div>
 
-        <nav className={`text-white`}>
+        <nav className="bg-primary text-white">
           <div className="container mx-auto px-3 sm:px-4 lg:px-6">
-            <div className="flex items-center gap-3 overflow-x-auto py-2.5 sm:gap-4 sm:py-3 lg:gap-8">
-              {/* Desktop nav */}
-              <div className="bg-primary hidden flex-1 items-center gap-3 md:flex">
+            <div className="hidden items-center gap-3 overflow-x-auto py-2.5 sm:gap-4 sm:py-3 md:flex lg:gap-8">
+              <Link href="/">
                 <Button
                   variant="secondary"
-                  className="bg-accent hover:bg-accent/90 soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base"
+                  className={`soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base ${
+                    pathname === '/'
+                      ? 'bg-accent hover:bg-accent/90'
+                      : 'bg-primary/20 hover:bg-primary/30'
+                  }`}
                 >
                   {t('Navbar.allProducts')}
                 </Button>
-                <Button
-                  type="button"
-                  className={`hover:text-accent cursor-pointer text-xs transition-colors sm:text-sm lg:text-base`}
-                  onClick={() => setShowOrderDialog(true)}
-                >
-                  {t('Navbar.myOrder') || 'My Order'}
-                </Button>
-                <Button
-                  type="button"
-                  className={`hover:text-accent cursor-pointer text-xs transition-colors sm:text-sm lg:text-base`}
-                >
-                  <a href="#" className="hover:text-accent cursor-pointer transition-colors">
-                    {t('Navbar.ourStory')}
-                  </a>
-                </Button>
-                <Button
-                  type="button"
-                  className={`hover:text-accent cursor-pointer text-xs transition-colors sm:text-sm lg:text-base`}
-                >
-                  <a
-                    href="/contact-us"
-                    className="hover:text-accent cursor-pointer transition-colors"
-                  >
-                    {t('Navbar.contactUs')}
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile nav dropdown */}
-          {showMobileNav && (
-            <div className="text-primary absolute right-0 left-0 z-50 bg-white shadow-md lg:hidden">
-              <div className="flex flex-col gap-2 p-4">
+              </Link>
+              <Button
+                type="button"
+                variant="secondary"
+                className={`soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base ${
+                  pathname?.startsWith('/order')
+                    ? 'bg-accent hover:bg-accent/90'
+                    : 'bg-primary/20 hover:bg-primary/30'
+                }`}
+                onClick={() => setShowOrderDialog(true)}
+              >
+                {t('Navbar.myOrder') || 'My Order'}
+              </Button>
+              <Link href="#">
                 <Button
                   variant="secondary"
-                  className="bg-accent hover:bg-accent/90 soft-button cursor-pointer text-xs whitespace-nowrap text-white"
+                  className={`soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base ${
+                    pathname === '/our-story'
+                      ? 'bg-accent hover:bg-accent/90'
+                      : 'bg-primary/20 hover:bg-primary/30'
+                  }`}
                 >
-                  {t('Navbar.allProducts')}
-                </Button>
-                <Button
-                  type="button"
-                  className={`hover:text-accent cursor-pointer text-xs transition-colors`}
-                  onClick={() => {
-                    setShowOrderDialog(true);
-                    setShowMobileNav(false);
-                  }}
-                >
-                  {t('Navbar.myOrder') || 'My Order'}
-                </Button>
-                <a href="#" className="hover:text-accent cursor-pointer text-xs transition-colors">
                   {t('Navbar.ourStory')}
-                </a>
-                <a
-                  href="/contact-us"
-                  className="hover:text-accent cursor-pointer text-xs transition-colors"
+                </Button>
+              </Link>
+              <Link href="/contact-us">
+                <Button
+                  variant="secondary"
+                  className={`soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base ${
+                    pathname?.startsWith('/contact-us')
+                      ? 'bg-accent hover:bg-accent/90'
+                      : 'bg-primary/20 hover:bg-primary/30'
+                  }`}
                 >
                   {t('Navbar.contactUs')}
-                </a>
-              </div>
+                </Button>
+              </Link>
             </div>
-          )}
+
+            {showMobileNav && (
+              <div className="border-t-accent box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; absolute right-0 left-0 z-50 rounded-b-[30px] border-t-2 bg-white shadow-lg md:hidden">
+                <div className="flex flex-col gap-1 p-3">
+                  <Link href="/" onClick={() => setShowMobileNav(false)}>
+                    <Button
+                      variant="secondary"
+                      className={`soft-button w-full cursor-pointer justify-start text-sm ${
+                        pathname === '/'
+                          ? 'bg-accent font-semibold text-white'
+                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      }`}
+                    >
+                      {t('Navbar.allProducts')}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="secondary"
+                    className={`soft-button w-full cursor-pointer justify-start text-sm ${
+                      pathname?.startsWith('/order')
+                        ? 'bg-accent font-semibold text-white'
+                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    }`}
+                    onClick={() => {
+                      setShowOrderDialog(true);
+                      setShowMobileNav(false);
+                    }}
+                  >
+                    {t('Navbar.myOrder') || 'My Order'}
+                  </Button>
+                  <Link href="#" onClick={() => setShowMobileNav(false)}>
+                    <Button
+                      variant="secondary"
+                      className={`soft-button w-full cursor-pointer justify-start text-sm ${
+                        pathname === '/our-story'
+                          ? 'bg-accent font-semibold text-white'
+                          : 'text-gray-900 hover:bg-gray-100'
+                      }`}
+                      onClick={() => setShowMobileNav(false)}
+                    >
+                      {t('Navbar.ourStory')}
+                    </Button>
+                  </Link>
+
+                  <Link href="/contact-us" onClick={() => setShowMobileNav(false)}>
+                    <Button
+                      variant="secondary"
+                      className={`soft-button w-full cursor-pointer justify-start text-sm ${
+                        pathname === '/contact-us'
+                          ? 'bg-accent font-semibold text-white'
+                          : 'text-gray-900 hover:bg-gray-100'
+                      }`}
+                    >
+                      {' '}
+                      {t('Navbar.contactUs')}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
       </header>
 
