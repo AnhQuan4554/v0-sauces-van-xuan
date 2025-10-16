@@ -12,7 +12,7 @@ import { Truck, MapPin } from 'lucide-react';
 import { DeliveryInfo, PaymentMethodType } from '@/app/types/deliveryInfor';
 import { BuyNowProductInterface, Product } from '@/app/types/products';
 import { OrderItemInput } from '@/app/types/orders';
-import { createOrder, createOrderItems } from '@/lib/supabase/orders';
+import { createOrder, createOrderItems } from '@/services/client/orders-supabase-client';
 
 interface CheckoutModalProps {
   open: boolean;

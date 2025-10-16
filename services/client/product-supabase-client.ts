@@ -1,5 +1,5 @@
-import { createClient } from './client';
 import { Product, ProductCreate, ProductUpdate } from '@/app/types/products';
+import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();
 
@@ -56,18 +56,6 @@ export async function searchProducts({
   }
 
   return data || [];
-}
-
-// Get single product by ID
-export async function getProduct(id: string): Promise<Product | null> {
-  const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
-
-  if (error) {
-    console.error('Error fetching product:', error);
-    return null;
-  }
-
-  return data;
 }
 
 // Create new product

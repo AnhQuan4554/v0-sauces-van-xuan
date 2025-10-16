@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice } from '@/app/utils/format-price';
 import Image from 'next/image';
-import { getAllOrderItemsByPhone } from '@/lib/supabase/orders';
+import { getAllOrderItemsByPhone } from '@/services/client/orders-supabase-client';
 import { formatDate } from '@/app/utils/format-date';
 import { useTranslations } from 'next-intl';
 

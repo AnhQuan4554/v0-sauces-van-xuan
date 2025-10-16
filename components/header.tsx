@@ -124,7 +124,7 @@ export default function Header() {
                 <span className="sm:hidden">A</span>
               </Button>
 
-              <Link href="/favorites" className="cursor-pointer">
+              <Link href="/favorites" className="cursor-pointer" prefetch={true}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -139,7 +139,7 @@ export default function Header() {
                 </Button>
               </Link>
 
-              <Link href="/cart" className="cursor-pointer">
+              <Link href="/cart" className="cursor-pointer" prefetch={true}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -215,7 +215,7 @@ export default function Header() {
                   {t('Navbar.ourStory')}
                 </Button>
               </Link>
-              <Link href="/contact-us">
+              <Link href="/contact-us" prefetch={true}>
                 <Button
                   variant="secondary"
                   className={`soft-button cursor-pointer text-xs whitespace-nowrap text-white sm:text-sm lg:text-base ${
@@ -272,7 +272,7 @@ export default function Header() {
                     </Button>
                   </Link>
 
-                  <Link href="/contact-us" onClick={() => setShowMobileNav(false)}>
+                  <Link href="/contact-us" onClick={() => setShowMobileNav(false)} prefetch={true}>
                     <Button
                       variant="secondary"
                       className={`soft-button w-full cursor-pointer justify-start text-sm ${

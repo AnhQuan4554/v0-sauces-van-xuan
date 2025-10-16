@@ -9,6 +9,8 @@ export interface Product {
   tags: string[];
   description?: string;
   description_en?: string;
+  origin?: string;
+  brand?: string;
 }
 
 export type ProductCreate = Omit<Product, 'id'>;

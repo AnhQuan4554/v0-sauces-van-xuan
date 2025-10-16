@@ -8,12 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { getProducts } from '@/lib/supabase/products';
 import { formatPrice, type Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import Link from 'next/link';
+import { getProducts } from '@/services/client/product-supabase-client';
 
 export default function ProductGrid() {
   const { toast } = useToast();
