@@ -1,42 +1,36 @@
 'use client';
 
-import type React from 'react';
-
+// External dependencies
+import React from 'react';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
+
+// Third-party UI & icons
 import { Heart, ShoppingCart } from 'lucide-react';
+
+// Project UI components
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+
+// Project hooks & utils
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, type Product } from '@/app/types/products';
 import { useRouter } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
-import Image from 'next/image';
-import { getProducts } from '@/services/client/product-supabase-client';
 
-export default function ProductGrid() {
+interface ProductGridProps {
+  products?: Product[];
+}
+
+export default function ProductGrid({ products }: ProductGridProps) {
   const { toast } = useToast();
   const componentT = useTranslations('Component');
   const titleT = useTranslations('Title');
 
   const router = useRouter();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
   const [favorites, setFavorites] = useState<Product[]>([]);
-
-  const loadProducts = async () => {
-    try {
-      const data = await getProducts();
-      setProducts(data);
-    } catch (error) {
-      console.error('Error loading products:', error);
-      alert('Failed to load products');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // ...existing code...
   const toggleFavorite = (product: Product) => {
@@ -56,7 +50,7 @@ export default function ProductGrid() {
   };
   // ...existing code...
 
-  const addToCart = (product: (typeof products)[0]) => {
+  const addToCart = (product: Product) => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existingItem = cart.find((item: any) => item.id === product.id);
 
@@ -81,25 +75,13 @@ export default function ProductGrid() {
   };
 
   useEffect(() => {
-    loadProducts();
     // Initialize favorites from localStorage
     const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(savedFavorites);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="bg-background flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          <p>Loading products...</p>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
         <div>
           <h1 className="text-primary text-xl font-bold sm:text-2xl lg:text-3xl">

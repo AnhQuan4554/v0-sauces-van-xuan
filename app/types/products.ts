@@ -35,4 +35,6 @@ export interface SearchFilter {
   max_price?: number;
   limit?: number;
   current_page?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
 }

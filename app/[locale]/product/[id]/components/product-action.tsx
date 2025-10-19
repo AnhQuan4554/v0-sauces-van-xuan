@@ -10,39 +10,43 @@ import { Heart, Share2 } from 'lucide-react';
 
 // Custom hooks
 import { useToast } from '@/hooks/use-toast';
+import { Product } from '@/app/types/products';
 
 interface ProductActionButtonsProps {
-  productID: string;
+  product: Product;
 }
 
-const ProductActionButtons = ({ productID }: ProductActionButtonsProps) => {
-  const toast = useToast();
+const ProductActionButtons = ({ product }: ProductActionButtonsProps) => {
+  const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const toggleFavorite = () => {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     let updatedFavorites;
 
     if (isFavorite) {
-      updatedFavorites = favorites.filter((id: string) => id !== productID);
+      updatedFavorites = favorites.filter((item: Product) => item.id !== product.id);
     } else {
-      updatedFavorites = [...favorites, productID];
+      updatedFavorites = [...favorites, product];
     }
 
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     setIsFavorite(!isFavorite);
     window.dispatchEvent(new CustomEvent('favoritesUpdated'));
-
-    // toast({
-    //   title: isFavorite ? 'addedToFavorites' : 'addedToFavorites',
-    //   description: `${product.name} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
-    // });
+    toast({
+      title: isFavorite ? 'addedToFavorites' : 'removedFromFavorites',
+      description: `${product.name} has been ${isFavorite ? 'removed from' : 'added to'} your favorites`,
+    });
   };
+
   useEffect(() => {
-    if (productID) {
-      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      setIsFavorite(favorites.includes(productID));
-    }
-  }, [productID]);
+    // Initialize favorites from localStorage
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    console.log('product', product);
+    console.log('savedFavorites', savedFavorites);
+    console.log('check++++', savedFavorites.includes(product.id));
+    setIsFavorite(savedFavorites.some((item: Product) => item.id === product.id));
+  }, []);
+
   return (
     <div className="flex items-center gap-2">
       <Button

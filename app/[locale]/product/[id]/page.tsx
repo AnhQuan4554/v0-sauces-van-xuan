@@ -59,8 +59,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     {(product?.stock ?? 0) > 0 ? titleT('inStock') : titleT('outOfStock')}
                   </Badge>
                 </div>
-
-                <ProductActionButtons productID={product.id} />
+                <ProductActionButtons product={product} />
               </div>
 
               <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center">
@@ -103,7 +102,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
             <Separator />
             <ProductOrderActions product={product} />
-
             <Separator />
 
             <div className="space-y-3 sm:space-y-4">
