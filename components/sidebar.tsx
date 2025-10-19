@@ -84,6 +84,7 @@ export default function Sidebar() {
   useEffect(() => {
     setSearchFilter({ ...searchFilter, min_price: priceRange[0], max_price: priceRange[1] });
   }, [priceRange[0], priceRange[1]]);
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Price Filter */}
@@ -148,21 +149,6 @@ export default function Sidebar() {
           ))}
         </div>
       </div>
-
-      {/* Discover Categories */}
-      {/* <div className="bg-card rounded-lg border p-3 sm:p-4">
-        <h3 className="text-primary mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Discover</h3>
-        <div className="max-h-64 space-y-1 overflow-y-auto sm:space-y-2">
-          {categories.map((category) => (
-            <div key={category} className="flex items-center justify-between py-1">
-              <span className="text-muted-foreground text-xs leading-tight sm:text-sm">
-                {category}
-              </span>
-              <ChevronRight className="text-muted-foreground h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
-            </div>
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 }

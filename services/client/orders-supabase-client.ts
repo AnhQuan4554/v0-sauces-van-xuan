@@ -1,5 +1,5 @@
 import { CreateOrder, CreateOrderItem, OrderUpdatePayload } from '@/app/types/orders';
-import { createClient } from './client';
+import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();
 // Tạo mới đơn hàng (orders)

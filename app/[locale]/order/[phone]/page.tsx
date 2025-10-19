@@ -16,7 +16,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -26,7 +25,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice } from '@/app/utils/format-price';
 import Image from 'next/image';
-import { getAllOrderItemsByPhone } from '@/lib/supabase/orders';
+import { getAllOrderItemsByPhone } from '@/services/client/orders-supabase-client';
 import { formatDate } from '@/app/utils/format-date';
 import { useTranslations } from 'next-intl';
 
@@ -179,10 +178,12 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                 {orders.map((order) => (
                   <TableRow key={order.orderItemId}>
                     <TableCell className="p-3 lg:p-4">
-                      <img
+                      <Image
                         src={order.image_url || '/placeholder.svg'}
                         alt={order.productName}
                         className="h-12 w-12 rounded object-cover lg:h-14 lg:w-14"
+                        width={48}
+                        height={48}
                       />
                     </TableCell>
                     <TableCell className="p-3 text-sm font-medium lg:p-4">
@@ -245,10 +246,12 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                 <div className="flex gap-3">
                   {/* Product Image */}
                   <div className="flex-shrink-0">
-                    <img
+                    <Image
                       src={order.image_url || '/placeholder.svg'}
                       alt={order.productName}
                       className="h-20 w-20 rounded object-cover"
+                      width={80}
+                      height={80}
                     />
                   </div>
 

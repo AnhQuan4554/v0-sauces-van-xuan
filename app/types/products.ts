@@ -9,6 +9,8 @@ export interface Product {
   tags: string[];
   description?: string;
   description_en?: string;
+  origin?: string;
+  brand?: string;
 }
 
 export type ProductCreate = Omit<Product, 'id'>;
@@ -33,4 +35,6 @@ export interface SearchFilter {
   max_price?: number;
   limit?: number;
   current_page?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
 }

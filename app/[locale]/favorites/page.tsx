@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, Product } from '@/app/types/products';
+import Image from 'next/image';
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Product[]>([]);
@@ -75,10 +76,12 @@ export default function FavoritesPage() {
           {favorites.map((item) => (
             <div key={item.id} className="rounded-lg border p-4 transition-shadow hover:shadow-lg">
               <div className="relative mb-4">
-                <img
+                <Image
                   src={item.image_url || '/placeholder.svg'}
                   alt={item.name}
                   className="h-48 w-full rounded object-cover"
+                  width={192}
+                  height={192}
                 />
                 <Button
                   variant="destructive"
