@@ -13,13 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
@@ -28,17 +22,11 @@ import Image from 'next/image';
 import { getAllOrderItemsByPhone } from '@/services/client/orders-supabase-client';
 import { formatDate } from '@/app/utils/format-date';
 import { useTranslations } from 'next-intl';
+import { OrderTableRow } from '@/app/types/orders';
+import OrderButtonActionPC from './components/order-button-action-pc';
+import OrderButtonActionMobile from './components/order-button-action-mobile';
+import { getStatusColorClass } from '@/app/utils/orderStatus';
 
-interface OrderTableRow {
-  orderItemId: string;
-  image_url: string;
-  productName: string;
-  quantity: number;
-  price: number;
-  totalAmount: number;
-  createdDate: string;
-  status: string;
-}
 interface OrderEdit {
   orderItemId: string;
   quantity: number;
@@ -48,25 +36,6 @@ const handleDeleteProduct = (orderItemId: string) => {
   if (confirm('Are you sure you want to delete this product?')) {
     // Call API delete and getAll order
   }
-};
-const handleEditOrder = (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  // const orderData: OrderEdit = {
-  //   orderItemId: editingProduct?.id || '',
-  //   quantity: formData.get('quantity') || 1,
-  // };
-
-  // setEditingProduct(product);
-  // setFormData({
-  //   name: product.name || '',
-  //   price: product.price || 0,
-  //   image_url: product.image_url || '',
-  //   tags: product.tags || [''],
-  //   description: product.description || '',
-  //   sold: product.sold || 0,
-  // });
-  // setIsEditDialogOpen(true);
 };
 
 const initialOrderDetail: OrderTableRow = {
@@ -84,21 +53,9 @@ interface OrderCustomerProps {
 }
 const OrderCustomer = ({ params }: OrderCustomerProps) => {
   const { phone } = params;
-  const { toast } = useToast();
   const t = useTranslations();
-  console.log('parame/phone', phone);
   const [orders, setOrders] = useState<OrderTableRow[]>([]);
-  const [orderDetail, setOrderDetail] = useState<OrderTableRow>(initialOrderDetail);
   const [loading, setLoading] = useState(true);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [formData, setFormData] = useState<OrderEdit>({
-    orderItemId: '',
-    quantity: 1,
-  });
-  const handleOpenModal = (order: OrderTableRow) => {
-    setOrderDetail(order);
-    setIsEditDialogOpen(true);
-  };
 
   useEffect(() => {
     // Fetch orders by phone
@@ -156,7 +113,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
             </h1>
           </div>
         </div>
-
+        {/* PC View */}
         <div className="hidden overflow-hidden rounded-lg border bg-white shadow-sm md:block">
           <div className="overflow-x-auto">
             <Table>
@@ -195,17 +152,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                     <TableCell className="p-3 text-sm lg:p-4">{order.quantity}</TableCell>
                     <TableCell className="p-3 text-sm lg:p-4">{order.totalAmount}</TableCell>
                     <TableCell
-                      className={`p-3 text-sm lg:p-4 ${
-                        order.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                          : order.status === 'processing'
-                            ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                            : order.status === 'completed'
-                              ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                              : order.status === 'cancelled'
-                                ? 'bg-red-100 text-red-800 hover:bg-red-200'
-                                : ''
-                      }`}
+                      className={`p-3 text-sm lg:p-4 ${getStatusColorClass(order.status)}`}
                     >
                       {order.status}
                     </TableCell>
@@ -213,24 +160,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
                       {formatDate(order.createdDate)}
                     </TableCell>
                     <TableCell className="p-3 text-right lg:p-4">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleOpenModal(order)}
-                          className="soft-button h-8 w-8 cursor-pointer p-0 lg:h-9 lg:w-9"
-                        >
-                          <Edit className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteProduct(order.orderItemId)}
-                          className="soft-button h-8 w-8 cursor-pointer p-0 lg:h-9 lg:w-9"
-                        >
-                          <Trash2 className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
-                        </Button>
-                      </div>
+                      <OrderButtonActionPC order={order} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -239,6 +169,7 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
           </div>
         </div>
 
+        {/*  Mobile View */}
         <div className="space-y-3 md:hidden">
           {orders.map((order) => (
             <Card key={order.orderItemId} className="overflow-hidden border bg-white shadow-sm">
@@ -284,145 +215,14 @@ const OrderCustomer = ({ params }: OrderCustomerProps) => {
 
                     <div className="text-muted-foreground text-xs">{order.createdDate}</div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleOpenModal(order)}
-                        className="soft-button h-8 flex-1 cursor-pointer text-xs"
-                      >
-                        <Edit className="mr-1 h-3 w-3" />
-                        {t('Component.Button.edit')}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteProduct(order.orderItemId)}
-                        className="soft-button h-8 flex-1 cursor-pointer text-xs"
-                      >
-                        <Trash2 className="mr-1 h-3 w-3" />
-                        {t('Component.Button.delete')}
-                      </Button>
-                    </div>
+                    {/* Action Buttons mobile */}
+                    <OrderButtonActionMobile order={order} />
                   </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="mx-3 max-h-[85vh] w-[calc(100%-1.5rem)] max-w-[425px] overflow-y-auto sm:mx-auto sm:max-h-[90vh]">
-            <DialogHeader>
-              <DialogTitle className="text-base sm:text-lg">{t('Title.editProduct')}</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleEditOrder} className="space-y-3 sm:space-y-4">
-              <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="edit-name" className="text-xs sm:text-sm">
-                  {t('Title.productName')}
-                </Label>
-                <Input
-                  id="edit-name"
-                  value={orderDetail?.productName}
-                  placeholder={t('Title.productName')}
-                  required
-                  className="h-9 cursor-text text-xs sm:h-10 sm:text-sm"
-                  disabled
-                />
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="edit-price" className="text-xs sm:text-sm">
-                  {t('Title.price')} (VND)
-                </Label>
-                <Input
-                  id="edit-price"
-                  type="number"
-                  value={orderDetail?.price}
-                  placeholder="Enter price"
-                  required
-                  className="h-9 cursor-text text-xs sm:h-10 sm:text-sm"
-                  disabled
-                />
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <Image
-                  src={orderDetail.image_url || '/placeholder.svg'}
-                  alt={orderDetail.productName}
-                  className="h-16 w-16 flex-shrink-0 rounded object-cover sm:h-20 sm:w-20"
-                  width={80}
-                  height={80}
-                />
-              </div>
-              <div className="space-y-1.5 sm:space-y-2">
-                <Label htmlFor="edit-status" className="text-xs sm:text-sm">
-                  {t('Table.status')}
-                </Label>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-9 w-full justify-between bg-transparent text-xs sm:h-10 sm:text-sm"
-                    >
-                      {orderDetail.status || 'Select status'}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="mx-3 w-[calc(100%-1.5rem)] max-w-xs sm:mx-auto">
-                    <DialogHeader>
-                      <DialogTitle className="text-base sm:text-lg">Update Status</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-2">
-                      {['pending', 'processing', 'completed', 'cancelled'].map((status) => (
-                        <Button
-                          key={status}
-                          variant={orderDetail.status === status ? 'default' : 'outline'}
-                          onClick={() => {
-                            setOrderDetail((prev) => ({
-                              ...prev,
-                              status,
-                            }));
-                            setIsEditDialogOpen(false);
-                          }}
-                          className={`h-9 w-full text-xs sm:h-10 sm:text-sm ${
-                            status === 'pending'
-                              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                              : status === 'processing'
-                                ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                                : status === 'completed'
-                                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                  : status === 'cancelled'
-                                    ? 'bg-red-100 text-red-800 hover:bg-red-200'
-                                    : ''
-                          }`}
-                        >
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </Button>
-                      ))}
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              <div className="flex flex-col-reverse justify-end gap-2 pt-2 sm:flex-row">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditDialogOpen(false)}
-                  className="soft-button h-9 cursor-pointer text-xs sm:h-10 sm:text-sm"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="soft-button h-9 cursor-pointer text-xs sm:h-10 sm:text-sm"
-                >
-                  Update Product
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

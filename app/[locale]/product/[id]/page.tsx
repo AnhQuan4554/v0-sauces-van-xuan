@@ -9,15 +9,18 @@ import ProductOrderActions from './components/product-order-actions';
 import ProductReview from './components/product-review';
 import ProductActionButtons from './components/product-action';
 import { getTranslations } from 'next-intl/server';
+import { dataFake } from '../../data-fake';
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = await getProduct(id);
-  const relatedProducts = await getRelatedProducts(
-    product?.origin || null,
-    product?.brand || null,
-    id
-  );
+  // const product = await getProduct(id);
+  // const relatedProducts = await getRelatedProducts(
+  //   product?.origin || null,
+  //   product?.brand || null,
+  //   id
+  // );
+  const product = dataFake.find((item) => item.id === id);
+  const relatedProducts = dataFake.filter((item) => item.id !== id).slice(0, 4);
   const componentT = await getTranslations('Component');
   const titleT = await getTranslations('Title');
   if (!product) {

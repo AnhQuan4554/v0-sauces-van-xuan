@@ -1,10 +1,9 @@
-import { CreateOrder, CreateOrderItem, OrderUpdatePayload } from '@/app/types/orders';
+import { CreateOrder, CreateOrderItem, OrderItem, OrderUpdatePayload } from '@/app/types/orders';
 import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();
-// Tạo mới đơn hàng (orders)
+// Create a new order
 export async function createOrder(orderData: CreateOrder) {
-  console.log('orderData++++', orderData);
   const { data, error } = await supabase
     .from('orders')
     .insert({
@@ -14,8 +13,6 @@ export async function createOrder(orderData: CreateOrder) {
       customer_address: orderData.customer_address,
       total_amount: orderData.total_amount,
       notes: orderData.notes,
-      // status: 'pending',
-      // payment_method: 'sepay',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
@@ -28,7 +25,24 @@ export async function createOrder(orderData: CreateOrder) {
   return data;
 }
 
-// Tạo mới chi tiết đơn hàng (order_items)
+// Update order status
+export async function updateOrderStatus(orderId: string, status: string) {
+  console.log('orderID', orderId);
+  console.log('status', status);
+  const { data, error } = await supabase
+    .from('orders')
+    .update({
+      status,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', orderId)
+    .select('id,status')
+    .single();
+  if (error) throw new Error(`Cập nhật trạng thái đơn hàng thất bại: ${error.message}`);
+  return data;
+}
+
+// Create order items
 export async function createOrderItems(orderItem: CreateOrderItem) {
   const listProduct = orderItem.items;
   const orderItems = listProduct.map((item) => ({
@@ -44,30 +58,6 @@ export async function createOrderItems(orderItem: CreateOrderItem) {
 
   if (error) throw new Error(`Tạo chi tiết đơn hàng thất bại: ${error.message}`);
   return status;
-}
-
-type OrderItemRow = {
-  id: number;
-  quantity: number;
-  subtotal: number;
-  product: { name: string; image_url: string };
-  order: { customer_phone: string };
-};
-
-export interface OrderItem {
-  id: string;
-  quantity: number;
-  subtotal: number;
-  created_at: string;
-  product: {
-    name: string;
-    image_url: string | null;
-    price: number;
-  };
-  order: {
-    customer_phone: string;
-    status: string;
-  };
 }
 
 export async function getAllOrderItemsByPhone(phoneInput: string): Promise<OrderItem[]> {
@@ -106,32 +96,6 @@ export async function getAllOrderItemsByPhone(phoneInput: string): Promise<Order
   console.log('Formatted Data:', formattedData);
   return formattedData;
 }
-// Get all order item dependent on
-// export async function getAllOrderItemsByPhone(phoneInput: string) {
-//   let { data, error } = await supabase
-//     .from('order_items')
-//     .select(
-//       `
-//     id,
-//     quantity,
-//     subtotal,
-//     product:products (
-//       name,
-//       image_url
-//     ),
-//    order:orders!inner (
-//       customer_phone
-//     )
-//   `
-//     )
-//     .eq('order.customer_phone', phoneInput);
-
-//   if (error) throw error;
-
-//   console.log(data);
-//   return data;
-//   // data[0].order_items => tất cả order_items của order đó
-// }
 
 // Cập nhật đơn hàng (orders)
 export async function updateOrder(orderId: string, updates: OrderUpdatePayload) {

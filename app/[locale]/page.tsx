@@ -8,13 +8,15 @@ import {
   getProductsServer,
 } from '@/services/server/product-supabase-server';
 import { SearchFilter } from '../types/products';
+import { dataFake } from './data-fake';
 
 interface HomeProps {
   searchParams: SearchFilter;
 }
 export default async function Home({ searchParams }: HomeProps) {
-  const productList = await getProductsServer(searchParams);
-  const { products, total } = productList;
+  // const productList = await getProductsServer(searchParams);
+  // const { products, total } = productList;
+
   return (
     <div className="bg-background min-h-screen">
       <FloatingSocial />
@@ -26,10 +28,11 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <section className="lg:w-3/4">
             <MobileFilterToggle />
-            <ProductGrid products={products} />
-            <Pagination
+            {/* <ProductGrid products={products} /> */}
+            <ProductGrid products={dataFake as any} />
+            {/* <Pagination
               totalPages={Math.ceil(total / (searchParams.limit || DEFAULT_PRODUCTS_PER_PAGE))}
-            />
+            /> */}
           </section>
         </div>
       </main>

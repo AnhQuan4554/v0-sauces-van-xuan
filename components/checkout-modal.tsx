@@ -1,23 +1,32 @@
 'use client';
-
+// External libraries
 import type React from 'react';
-
 import { useState } from 'react';
+
+// UI components
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+// Icons
 import { Truck, MapPin } from 'lucide-react';
+
+// Types
 import { DeliveryInfo, PaymentMethodType } from '@/app/types/deliveryInfor';
 import { BuyNowProductInterface, Product } from '@/app/types/products';
 import { OrderItemInput } from '@/app/types/orders';
+
+// Services
 import { createOrder, createOrderItems } from '@/services/client/orders-supabase-client';
+
+// Hooks
+import { useToast } from '@/hooks/use-toast';
 
 interface CheckoutModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  buyNowProduct?: BuyNowProductInterface;
+  buyNowProduct?: BuyNowProductInterface | null;
 }
 const defaultForm: DeliveryInfo = {
   fullName: '',
@@ -29,12 +38,18 @@ const defaultForm: DeliveryInfo = {
   paymentMethod: 'cod',
 };
 
-export default function CheckoutModal({ open, onOpenChange, buyNowProduct }: CheckoutModalProps) {
+export default function CheckoutModal({
+  open,
+  onOpenChange,
+  buyNowProduct = null,
+}: CheckoutModalProps) {
+  const { toast } = useToast();
   const [formData, setFormData] = useState<DeliveryInfo>(defaultForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deliveryType, setDeliveryType] = useState('delivery');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Update form data state depending on input changes
     const { value, id } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
@@ -93,7 +108,11 @@ export default function CheckoutModal({ open, onOpenChange, buyNowProduct }: Che
       }
 
       // Show success message
-      alert("Order completed successfully! We'll contact you soon.");
+      toast({
+        title: 'Order placed successfully!',
+        description: 'Thank you for your purchase. Your order is being processed.',
+        variant: 'default',
+      });
 
       // Close modal and reset form
       onOpenChange(false);

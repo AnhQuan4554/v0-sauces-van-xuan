@@ -41,16 +41,40 @@ export interface OrderUpdatePayload {
   updated_at?: string; // ISO date string
 }
 // Order Item
+// export interface OrderItem {
+//   id: string;
+//   order_id: string;
+//   product_id: string;
+//   quantity: number;
+//   price_at_purchase: number;
+//   subtotal: number;
+//   created_at: string;
+// }
 export interface OrderItem {
   id: string;
-  order_id: string;
-  product_id: string;
   quantity: number;
-  price_at_purchase: number;
   subtotal: number;
   created_at: string;
+  product: {
+    name: string;
+    image_url: string | null;
+    price: number;
+  };
+  order: {
+    customer_phone: string;
+    status: string;
+  };
 }
-
+export interface OrderTableRow {
+  orderItemId: string;
+  image_url: string;
+  productName: string;
+  quantity: number;
+  price: number;
+  totalAmount: number;
+  createdDate: string;
+  status: string;
+}
 export interface OrderItemInput {
   product_id: string;
   quantity: number;
