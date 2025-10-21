@@ -86,3 +86,15 @@ export interface CreateOrderItem {
 }
 
 export type UpdateOrderItem = Partial<Omit<OrderItem, 'id' | 'created_at'>>;
+
+// Interface for Order Admin View
+export interface OrderItemTable {
+  id: string;
+  productName: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+export interface OrderTable extends Order {
+  items: OrderItemTable[];
+}
